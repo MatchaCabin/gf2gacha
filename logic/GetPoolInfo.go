@@ -13,15 +13,23 @@ func GetPoolInfo(uid string, poolType int64) (model.Pool, error) {
 	}
 
 	pool := model.Pool{PoolType: poolType}
+	var isPreviousLose bool
 	for _, storedRecord := range localRecordList {
 		pool.GachaCount++
 		pool.StoredCount++
 		item := preload.ItemMap[storedRecord.ItemId]
 		if item.Rank == 5 {
+			if isPreviousLose {
+				pool.GuaranteesCount++
+			}
 			//检测是否歪
 			var lose bool
 			if upItemId, hasUp := preload.UpItemMap[storedRecord.PoolId]; hasUp && upItemId != storedRecord.ItemId {
+				pool.LoseCount++
 				lose = true
+				isPreviousLose = true
+			} else {
+				isPreviousLose = false
 			}
 
 			pool.RecordList = append(pool.RecordList, model.DisplayRecord{

@@ -66,7 +66,7 @@ const option = {
 </script>
 
 <template>
-  <div class="basis-72 shrink-0 grow-0 flex flex-col items-center gap-2" v-if="pool.GachaCount">
+  <div class="basis-72 shrink-0 grow-0 flex flex-col items-center gap-2 my-2" v-if="pool.GachaCount">
     <div class="font-bold text-xl">{{ title() }}</div>
     <v-chart class="h-64" :option="option"></v-chart>
     <div class="flex flex-col w-full">
@@ -74,6 +74,8 @@ const option = {
       <div class="w-full text-sm text-amber-600">五星: {{ pool.Rank5Count }} [{{ pool.GachaCount > 0 ? Math.round(pool.Rank5Count * 10000 / pool.GachaCount) / 100 + '%' : '0%' }}]</div>
       <div class="w-full text-sm text-purple-600">四星: {{ pool.Rank4Count }} [{{ pool.GachaCount > 0 ? Math.round(pool.Rank4Count * 10000 / pool.GachaCount) / 100 + '%' : '0%' }}]</div>
       <div class="w-full text-sm text-blue-600">三星: {{ pool.Rank3Count }} [{{ pool.GachaCount > 0 ? Math.round(pool.Rank3Count * 10000 / pool.GachaCount) / 100 + '%' : '0%' }}]</div>
+      <div class="w-full text-sm text-green-600">平均出金抽数：{{ pool.Rank5Count > 0 ? (pool.GachaCount / pool.Rank5Count).toFixed(1)  : '无' }}</div>
+      <div class="w-full text-sm text-red-600" @click="console.log(pool)">歪率: {{ pool.Rank5Count > 0 ?Math.round(pool.LoseCount * 10000 / (pool.Rank5Count - pool.GuaranteesCount)) / 100 + '%' : '0%'}} </div>
     </div>
     <div class="w-full text-sm text-gray-400">五星抽卡记录：</div>
     <div class="flex flex-wrap gap-1">
