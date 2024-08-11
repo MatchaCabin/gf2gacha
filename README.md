@@ -14,7 +14,7 @@
 - [x] 多用户
 - [x] 增量更新
 - [ ] 全量更新
-- [ ] 导入[追放采购记录导出工具](https://github.com/EtherealAO/exilium-recruit-export)数据
+- [x] 导入[追放采购记录导出工具](https://github.com/EtherealAO/exilium-recruit-export)数据
 
 ## 使用方法
 
