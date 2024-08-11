@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    margin: 0;
+    font-family: "MapleMono",sans-serif;
+}
+
+@font-face {
+    font-family: "MapleMono";
+    src: local(""),
+    url("assets/fonts/MapleMono-Regular.woff2");
+}
