@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
-import {GetGameInfo, GetPoolInfo, GetUserList, IncrementalUpdatePoolInfo} from "../wailsjs/go/main/App";
+import {GetGameInfo, GetPoolInfo, GetUserList, IncrementalUpdatePoolInfo, MergeEreRecord} from "../wailsjs/go/main/App";
 import PoolCard from "./components/PoolCard.vue";
 import {model} from "../wailsjs/go/models";
 import 'element-plus/es/components/message/style/css'
@@ -15,7 +15,8 @@ const uidList = ref<string[]>([]);
 const poolList = ref<Pool[]>([]);
 const gameInfo = ref<Info>({})
 const loading = ref(false);
-const dialogVisible = ref(false)
+const dialogInfoVisible = ref(false)
+const dialogEreVisible = ref(false)
 
 
 const getUidList = async () => {
@@ -65,11 +66,22 @@ const incrementalUpdatePoolInfo = async () => {
   loading.value = false
 }
 
-const openDialog = async () => {
+const openInfoDialog = async () => {
   await GetGameInfo().then(result => {
     gameInfo.value = result
   })
-  dialogVisible.value = true
+  dialogInfoVisible.value = true
+}
+
+const mergeEreRecord = async () => {
+  loading.value = true
+  await MergeEreRecord(currentUid.value).then(() => {
+    ElMessage({message: '合并成功', type: 'success', plain: true, showClose: true, duration: 1000})
+  }).catch(() => {
+    ElMessage({message: '合并发生错误', type: 'error', plain: true, showClose: true, duration: 1000})
+  })
+  await getAllPoolInfo()
+  loading.value = false
 }
 
 const copyUid = () => {
@@ -103,20 +115,24 @@ onMounted(async () => {
       <div class="grow">
         <el-button type="success" class="font-bold" @click="incrementalUpdatePoolInfo">增量更新</el-button>
         <el-button type="primary" class="font-bold" disabled>全量更新</el-button>
-        <el-button type="danger" class="font-bold" disabled>导入导出</el-button>
+        <el-popconfirm class="text-red-600" width="360" confirm-button-text="确定" cancel-button-text="取消" :title="`确定将数据合并进当前用户(UID:${currentUid})?`" @confirm="mergeEreRecord">
+          <template #reference>
+            <el-button type="danger" class="font-bold" :disabled="!currentUid">导入ERE数据</el-button>
+          </template>
+        </el-popconfirm>
       </div>
       <div class="flex items-center gap-2">
         <div>UID:</div>
         <el-select v-model="currentUid" class="w-28" @change="getAllPoolInfo">
           <el-option v-for="uid in uidList" :key="uid" :label="uid" :value="uid"/>
         </el-select>
-        <el-button text :icon="Connection" circle @click="openDialog"/>
+        <el-button text :icon="Connection" circle @click="openInfoDialog"/>
       </div>
     </div>
     <div class="w-full flex flex-wrap justify-between">
       <PoolCard v-for="pool in poolList" :pool="pool"></PoolCard>
     </div>
-    <el-dialog v-model="dialogVisible" width="600">
+    <el-dialog v-model="dialogInfoVisible" width="600">
       <template #title>
         <div class="text-xl font-bold">当前日志信息</div>
       </template>

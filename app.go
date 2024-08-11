@@ -6,6 +6,7 @@ import (
 	"gf2gacha/model"
 	"gf2gacha/util"
 	"github.com/sirupsen/logrus"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -58,4 +59,26 @@ func (a *App) IncrementalUpdatePoolInfo() string {
 		return ""
 	}
 	return uid
+}
+
+func (a *App) MergeEreRecord(uid string) {
+	erePath, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "请选择Exilium Recruit Export的数据文件",
+		Filters: []runtime.FileFilter{
+			{
+				DisplayName: "EreData(*.json)",
+				Pattern:     "*.json",
+			},
+		},
+	})
+	if err != nil {
+		logrus.Error(err)
+		return
+	}
+
+	err = logic.MergeEreRecord(uid, erePath)
+	if err != nil {
+		logrus.Error(err)
+		return
+	}
 }

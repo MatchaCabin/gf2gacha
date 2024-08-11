@@ -5,9 +5,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-func SaveLocalRecord(uid string, recordList []model.LocalRecord) (int64, error) {
+func SaveLocalRecord(uid string, recordList []model.LocalRecord) error {
 	if uid == "" {
-		return 0, errors.New("uid为空")
+		return errors.New("uid为空")
 	}
 
 	session := model.Engine.NewSession()
@@ -15,13 +15,13 @@ func SaveLocalRecord(uid string, recordList []model.LocalRecord) (int64, error) 
 
 	err := session.Table(uid).Sync(new(model.LocalRecord))
 	if err != nil {
-		return 0, errors.WithStack(err)
+		return errors.WithStack(err)
 	}
 
-	n, err := session.Table(uid).Insert(&recordList)
+	_, err = session.Table(uid).Insert(&recordList)
 	if err != nil {
-		return 0, errors.WithStack(err)
+		return errors.WithStack(err)
 	}
 
-	return n, nil
+	return nil
 }

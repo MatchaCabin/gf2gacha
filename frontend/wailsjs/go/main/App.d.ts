@@ -9,3 +9,5 @@ export function GetPoolInfo(arg1:string,arg2:number):Promise<model.Pool>;
 export function GetUserList():Promise<Array<string>>;
 
 export function IncrementalUpdatePoolInfo():Promise<string>;
+
+export function MergeEreRecord(arg1:string):Promise<void>;

@@ -17,3 +17,7 @@ export function GetUserList() {
 export function IncrementalUpdatePoolInfo() {
   return window['go']['main']['App']['IncrementalUpdatePoolInfo']();
 }
+
+export function MergeEreRecord(arg1) {
+  return window['go']['main']['App']['MergeEreRecord'](arg1);
+}

@@ -61,7 +61,7 @@ func incrementalUpdatePoolInfo(gameInfo model.Info, poolType int64) error {
 				GachaTimestamp: diffRemoteRecordList[i].GachaTimestamp,
 			})
 		}
-		_, err = SaveLocalRecord(gameInfo.Uid, diffLocalRecordList)
+		err = SaveLocalRecord(gameInfo.Uid, diffLocalRecordList)
 		if err != nil {
 			return errors.WithStack(err)
 		}
