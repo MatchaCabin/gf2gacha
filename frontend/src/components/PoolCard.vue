@@ -75,7 +75,7 @@ const option = {
       <div class="w-full text-sm text-purple-600">四星: {{ pool.Rank4Count }} [{{ pool.GachaCount > 0 ? Math.round(pool.Rank4Count * 10000 / pool.GachaCount) / 100 + '%' : '0%' }}]</div>
       <div class="w-full text-sm text-blue-600">三星: {{ pool.Rank3Count }} [{{ pool.GachaCount > 0 ? Math.round(pool.Rank3Count * 10000 / pool.GachaCount) / 100 + '%' : '0%' }}]</div>
       <div class="w-full text-sm text-green-600">平均出金抽数：{{ pool.Rank5Count > 0 ? (pool.GachaCount / pool.Rank5Count).toFixed(1)  : '无' }}</div>
-      <div class="w-full text-sm text-red-600" @click="console.log(pool)">歪率: {{ pool.Rank5Count > 0 ?Math.round(pool.LoseCount * 10000 / (pool.Rank5Count - pool.GuaranteesCount)) / 100 + '%' : '0%'}} </div>
+      <div class="w-full text-sm text-red-600" v-if="pool.PoolType==3||pool.PoolType==4">歪率: {{ pool.Rank5Count > 0 ?Math.round(pool.LoseCount * 10000 / (pool.Rank5Count - pool.GuaranteesCount)) / 100 + '%' : '0%'}} </div>
     </div>
     <div class="w-full text-sm text-gray-400">五星抽卡记录：</div>
     <div class="flex flex-wrap gap-1">
