@@ -18,7 +18,8 @@ func GetPoolInfo(uid string, poolType int64) (model.Pool, error) {
 		pool.GachaCount++
 		pool.StoredCount++
 		item := preload.ItemMap[storedRecord.ItemId]
-		if item.Rank == 5 {
+		itemRank := preload.ItemRankMap[storedRecord.PoolId][storedRecord.ItemId]
+		if itemRank == 5 {
 			if isPreviousLose {
 				pool.GuaranteesCount++
 			}
@@ -41,7 +42,7 @@ func GetPoolInfo(uid string, poolType int64) (model.Pool, error) {
 
 			pool.StoredCount = 0
 			pool.Rank5Count++
-		} else if item.Rank == 4 {
+		} else if itemRank == 4 {
 			pool.Rank4Count++
 		} else {
 			pool.Rank3Count++

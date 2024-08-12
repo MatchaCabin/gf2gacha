@@ -41,6 +41,7 @@ const getAllPoolInfo = async () => {
   await getPoolInfo(4)
   await getPoolInfo(1)
   await getPoolInfo(5)
+  await getPoolInfo(8)
 }
 
 const incrementalUpdatePoolInfo = async () => {
