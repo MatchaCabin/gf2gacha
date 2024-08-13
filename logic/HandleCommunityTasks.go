@@ -79,7 +79,7 @@ func HandleCommunityTasks() (messageList []string, err error) {
 					if err != nil {
 						return nil, errors.WithStack(err)
 					}
-					messageList = append(messageList, fmt.Sprintf("消耗积分%d，成功兑换『%s*%d』", exchangeItem.ItemName, exchangeItem.ItemCount))
+					messageList = append(messageList, fmt.Sprintf("消耗积分%d，成功兑换『%s*%d』", exchangeItem.UseScore, exchangeItem.ItemName, exchangeItem.ItemCount))
 				} else {
 					messageList = append(messageList, fmt.Sprintf("积分不足%d，无法兑换『%s*%d』", exchangeItem.UseScore, exchangeItem.ItemName, exchangeItem.ItemCount))
 				}
