@@ -36,7 +36,7 @@ type CommunityTopicViewData struct {
 }
 
 func CommunityTopicView(webToken string, topicId int64) (CommunityTopicViewData, error) {
-	apiUrl := fmt.Sprintf(`https://gf2-bbs-api.sunborngame.com/community/topic/%s`, topicId)
+	apiUrl := fmt.Sprintf(`https://gf2-bbs-api.sunborngame.com/community/topic/%d`, topicId)
 
 	values := url.Values{
 		"id": []string{strconv.FormatInt(topicId, 10)},

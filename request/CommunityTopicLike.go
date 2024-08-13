@@ -8,7 +8,7 @@ import (
 )
 
 func CommunityTopicLike(webToken string, topicId int64) error {
-	apiUrl := fmt.Sprintf(`https://gf2-bbs-api.sunborngame.com/community/topic/like/%s`, topicId)
+	apiUrl := fmt.Sprintf(`https://gf2-bbs-api.sunborngame.com/community/topic/like/%d`, topicId)
 
 	values := url.Values{
 		"id": []string{strconv.FormatInt(topicId, 10)},

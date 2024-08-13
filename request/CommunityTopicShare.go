@@ -8,7 +8,7 @@ import (
 )
 
 func CommunityTopicShare(webToken string, topicId int64) error {
-	apiUrl := fmt.Sprintf(`https://gf2-bbs-api.sunborngame.com/community/topic/share/%s`, topicId)
+	apiUrl := fmt.Sprintf(`https://gf2-bbs-api.sunborngame.com/community/topic/share/%d`, topicId)
 
 	values := url.Values{
 		"id": []string{strconv.FormatInt(topicId, 10)},
