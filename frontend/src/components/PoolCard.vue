@@ -66,20 +66,22 @@ const option = {
 </script>
 
 <template>
-  <div class="basis-72 shrink-0 grow-0 flex flex-col items-center gap-2 my-2" v-if="pool.gachaCount">
+  <div class="basis-72 shrink-0 grow flex flex-col items-center gap-2 my-2" v-if="pool.gachaCount">
     <div class="font-bold text-xl">{{ title() }}</div>
-    <v-chart class="h-64" :option="option"></v-chart>
+    <div class="h-64 w-64">
+      <v-chart class="h-64" :option="option"></v-chart>
+    </div>
     <div class="flex flex-col w-full">
       <div class="w-full text-sm">一共 <span class="text-red-600">{{ pool.gachaCount }}</span> 抽，已垫 <span class="text-red-600">{{ pool.storedCount }}</span> 抽</div>
       <div class="w-full text-sm text-amber-600">五星: {{ pool.rank5Count }} [{{ pool.gachaCount > 0 ? Math.round(pool.rank5Count * 10000 / pool.gachaCount) / 100 + '%' : '0%' }}]</div>
       <div class="w-full text-sm text-purple-600">四星: {{ pool.rank4Count }} [{{ pool.gachaCount > 0 ? Math.round(pool.rank4Count * 10000 / pool.gachaCount) / 100 + '%' : '0%' }}]</div>
       <div class="w-full text-sm text-blue-600">三星: {{ pool.rank3Count }} [{{ pool.gachaCount > 0 ? Math.round(pool.rank3Count * 10000 / pool.gachaCount) / 100 + '%' : '0%' }}]</div>
-      <div class="w-full text-sm text-green-600">平均出金抽数：{{ pool.rank5Count > 0 ? (pool.gachaCount - pool.storedCount / pool.rank5Count).toFixed(1) : '无' }}</div>
+      <div class="w-full text-sm text-green-600">平均出金抽数：{{ pool.rank5Count > 0 ? ((pool.gachaCount - pool.storedCount) / pool.rank5Count).toFixed(1) : '无' }}</div>
       <div class="w-full text-sm text-red-600" v-if="pool.poolType==3||pool.poolType==4">歪率: {{ pool.rank5Count > 0 ?Math.round(pool.loseCount * 10000 / (pool.rank5Count - pool.guaranteesCount)) / 100 + '%' : '0%'}} </div>
     </div>
     <div class="w-full text-sm text-gray-400">五星抽卡记录：</div>
-    <div class="flex flex-wrap gap-1">
-      <el-tag class="text-sm" v-for="record in pool.recordList" effect="dark" :type="tagType[record.Id%4]">{{ `${record.Name}(${record.Count}${record.Lose ? '歪' : ''})` }}</el-tag>
+    <div class="w-full flex flex-wrap gap-2">
+      <el-tag class="text-sm w-32" v-for="record in pool.recordList" effect="dark" :type="tagType[record.id%4]">{{ `${record.name}(${record.count}${record.lose ? '歪' : ''})` }}</el-tag>
     </div>
   </div>
 </template>

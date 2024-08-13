@@ -18,8 +18,8 @@ type LocalRecord struct {
 }
 
 type DisplayRecord struct {
-	Id    int64
-	Name  string
-	Lose  bool
-	Count int64
+	Id    int64  `json:"id"`
+	Name  string `json:"name"`
+	Lose  bool   `json:"lose"`
+	Count int64  `json:"count"`
 }

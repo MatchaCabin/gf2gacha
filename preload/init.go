@@ -16,7 +16,7 @@ var (
 )
 
 func init() {
-	info, err := util.GetGameInfo()
+	info, err := util.GetLogInfo()
 	if err != nil {
 		logrus.Panic(err)
 	}

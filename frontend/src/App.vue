@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
-import {GetGameInfo, GetPoolInfo, GetUserList, IncrementalUpdatePoolInfo, MergeEreRecord} from "../wailsjs/go/main/App";
+import {GetLogInfo, GetPoolInfo, GetUserList, HandleCommunityTasks, IncrementalUpdatePoolInfo, MergeEreRecord} from "../wailsjs/go/main/App";
 import PoolCard from "./components/PoolCard.vue";
 import {model} from "../wailsjs/go/models";
 import 'element-plus/es/components/message/style/css'
@@ -8,16 +8,14 @@ import {ElMessage} from "element-plus";
 import {Connection, CopyDocument} from "@element-plus/icons-vue";
 import {ClipboardSetText} from "../wailsjs/runtime";
 import Pool = model.Pool;
-import Info = model.Info;
+import LogInfo = model.LogInfo;
 
 const currentUid = ref("");
 const uidList = ref<string[]>([]);
 const poolList = ref<Pool[]>([]);
-const gameInfo = ref<Info>({})
+const logInfo = ref<LogInfo>({})
 const loading = ref(false);
 const dialogInfoVisible = ref(false)
-const dialogEreVisible = ref(false)
-
 
 const getUidList = async () => {
   await GetUserList().then(result => {
@@ -68,8 +66,8 @@ const incrementalUpdatePoolInfo = async () => {
 }
 
 const openInfoDialog = async () => {
-  await GetGameInfo().then(result => {
-    gameInfo.value = result
+  await GetLogInfo().then(result => {
+    logInfo.value = result
   })
   dialogInfoVisible.value = true
 }
@@ -86,18 +84,28 @@ const mergeEreRecord = async () => {
 }
 
 const copyUid = () => {
-  ClipboardSetText(gameInfo.value.Uid)
+  ClipboardSetText(logInfo.value.uid)
   ElMessage({message: 'UID已复制', type: 'success', plain: true, showClose: true, duration: 1000})
 }
 
 const copyGachaUrl = () => {
-  ClipboardSetText(gameInfo.value.GachaUrl)
+  ClipboardSetText(logInfo.value.gachaUrl)
   ElMessage({message: '抽卡链接已复制', type: 'success', plain: true, showClose: true, duration: 1000})
 }
 
 const copyAccessToken = () => {
-  ClipboardSetText(gameInfo.value.AccessToken)
+  ClipboardSetText(logInfo.value.accessToken)
   ElMessage({message: 'AccessToken已复制', type: 'success', plain: true, showClose: true, duration: 1000})
+}
+
+const handleCommunityTasks = () => {
+  HandleCommunityTasks().then(result => {
+    result.forEach(message => {
+      ElMessage({message: message, type: 'success', plain: true, showClose: true, duration: 3000})
+    })
+  }).catch(err => {
+    ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 3000})
+  })
 }
 
 onMounted(async () => {
@@ -123,6 +131,7 @@ onMounted(async () => {
         </el-popconfirm>
       </div>
       <div class="flex items-center gap-2">
+        <el-button type="primary" class="font-bold" @click="handleCommunityTasks">一键社区</el-button>
         <div>UID:</div>
         <el-select v-model="currentUid" class="w-28" @change="getAllPoolInfo">
           <el-option v-for="uid in uidList" :key="uid" :label="uid" :value="uid"/>
@@ -130,7 +139,7 @@ onMounted(async () => {
         <el-button text :icon="Connection" circle @click="openInfoDialog"/>
       </div>
     </div>
-    <div class="w-full flex flex-wrap justify-between">
+    <div class="w-full flex flex-wrap gap-4">
       <PoolCard v-for="pool in poolList" :pool="pool"></PoolCard>
     </div>
     <el-dialog v-model="dialogInfoVisible" width="600">
@@ -140,17 +149,17 @@ onMounted(async () => {
       <div class="flex flex-col gap-4">
         <div class="flex items-center gap-2">
           <div class="w-24 shrink-0">UID</div>
-          <el-input class="grow" readonly v-model="gameInfo.Uid"/>
+          <el-input class="grow" readonly v-model="logInfo.uid"/>
           <el-button text :icon="CopyDocument" circle @click="copyUid"/>
         </div>
         <div class="flex items-center gap-2">
           <div class="w-24 shrink-0">抽卡链接</div>
-          <el-input class="grow" readonly v-model="gameInfo.GachaUrl"/>
+          <el-input class="grow" readonly v-model="logInfo.gachaUrl"/>
           <el-button text :icon="CopyDocument" circle @click="copyGachaUrl"/>
         </div>
         <div class="flex items-center gap-2">
           <div class="w-24 shrink-0">AccessToken</div>
-          <el-input class="grow" readonly type="password" v-model="gameInfo.AccessToken"/>
+          <el-input class="grow" readonly type="password" v-model="logInfo.accessToken"/>
           <el-button text :icon="CopyDocument" circle @click="copyAccessToken"/>
         </div>
         <el-alert title="请勿随意泄露AccessToken，虽然操作上有难度，但理论上可以融号" type="warning" show-icon :closable="false"></el-alert>

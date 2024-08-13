@@ -7,8 +7,8 @@ import (
 )
 
 // incrementalUpdatePoolInfo 增量更新
-func incrementalUpdatePoolInfo(gameInfo model.Info, poolType int64) error {
-	localRecordList, err := GetLocalRecord(gameInfo.Uid, poolType)
+func incrementalUpdatePoolInfo(logInfo model.LogInfo, poolType int64) error {
+	localRecordList, err := GetLocalRecord(logInfo.Uid, poolType)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -20,7 +20,7 @@ func incrementalUpdatePoolInfo(gameInfo model.Info, poolType int64) error {
 	}
 
 	var diffRemoteRecordList []model.RemoteRecord
-	respData, err := FetchRemoteData(gameInfo.GachaUrl, gameInfo.AccessToken, "", poolType)
+	respData, err := FetchRemoteData(logInfo.GachaUrl, logInfo.AccessToken, "", poolType)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -37,7 +37,7 @@ func incrementalUpdatePoolInfo(gameInfo model.Info, poolType int64) error {
 	}
 	for respData.Next != "" && !flag {
 		//time.Sleep(50 * time.Millisecond) //这个接口似乎没有限制频率
-		respData, err = FetchRemoteData(gameInfo.GachaUrl, gameInfo.AccessToken, respData.Next, poolType)
+		respData, err = FetchRemoteData(logInfo.GachaUrl, logInfo.AccessToken, respData.Next, poolType)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -61,7 +61,7 @@ func incrementalUpdatePoolInfo(gameInfo model.Info, poolType int64) error {
 				GachaTimestamp: diffRemoteRecordList[i].GachaTimestamp,
 			})
 		}
-		err = SaveLocalRecord(gameInfo.Uid, diffLocalRecordList)
+		err = SaveLocalRecord(logInfo.Uid, diffLocalRecordList)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -71,31 +71,31 @@ func incrementalUpdatePoolInfo(gameInfo model.Info, poolType int64) error {
 }
 
 func IncrementalUpdatePoolInfo() (string, error) {
-	gameInfo, err := util.GetGameInfo()
+	logInfo, err := util.GetLogInfo()
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
 
-	err = incrementalUpdatePoolInfo(gameInfo, 1)
+	err = incrementalUpdatePoolInfo(logInfo, 1)
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
-	err = incrementalUpdatePoolInfo(gameInfo, 3)
+	err = incrementalUpdatePoolInfo(logInfo, 3)
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
-	err = incrementalUpdatePoolInfo(gameInfo, 4)
+	err = incrementalUpdatePoolInfo(logInfo, 4)
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
-	err = incrementalUpdatePoolInfo(gameInfo, 5)
+	err = incrementalUpdatePoolInfo(logInfo, 5)
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
-	err = incrementalUpdatePoolInfo(gameInfo, 8)
+	err = incrementalUpdatePoolInfo(logInfo, 8)
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
 
-	return gameInfo.Uid, nil
+	return logInfo.Uid, nil
 }

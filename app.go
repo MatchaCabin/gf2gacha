@@ -25,11 +25,11 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-func (a *App) GetGameInfo() model.Info {
-	info, err := util.GetGameInfo()
+func (a *App) GetLogInfo() model.LogInfo {
+	info, err := util.GetLogInfo()
 	if err != nil {
 		logrus.Error(err)
-		return model.Info{}
+		return model.LogInfo{}
 	}
 	return info
 }
@@ -81,4 +81,13 @@ func (a *App) MergeEreRecord(uid string) {
 		logrus.Error(err)
 		return
 	}
+}
+
+func (a *App) HandleCommunityTasks() (messageList []string, err error) {
+	messageList, err = logic.HandleCommunityTasks()
+	if err != nil {
+		logrus.Error(err)
+		return
+	}
+	return
 }
