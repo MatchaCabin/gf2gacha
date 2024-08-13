@@ -6,6 +6,7 @@ import (
 	"gf2gacha/util"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+	"sort"
 	"time"
 )
 
@@ -24,7 +25,7 @@ func HandleCommunityTasks() (messageList []string, err error) {
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	messageList = append(messageList, fmt.Sprintf("当前用户: %s (UID:%d)", userInfo.Name, userInfo.Uid))
+	messageList = append(messageList, fmt.Sprintf("当前用户: %s (UID:%d)", userInfo.User.GameNickName, userInfo.User.GameUid))
 
 	taskListData, err := request.CommunityTaskList(webToken)
 	if err != nil {
@@ -53,6 +54,35 @@ func HandleCommunityTasks() (messageList []string, err error) {
 				messageList = append(messageList, shareMessageList...)
 			default:
 				logrus.Errorf("未知的社区任务%s", dailyTask.TaskName)
+			}
+		}
+	}
+
+	exchangeListData, err := request.CommunityExchangeList(webToken)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	//按价值排序，优先兑换高价值道具
+	sort.Slice(exchangeListData.List, func(i, j int) bool {
+		return exchangeListData.List[i].UseScore > exchangeListData.List[j].UseScore
+	})
+	for _, exchangeItem := range exchangeListData.List {
+		if exchangeItem.ExchangeCount < exchangeItem.MaxExchangeCount {
+			for i := int64(0); i < exchangeItem.MaxExchangeCount-exchangeItem.ExchangeCount; i++ {
+				info, err := request.CommunityUserInfo(webToken)
+				if err != nil {
+					return nil, errors.WithStack(err)
+				}
+
+				if info.User.Score >= exchangeItem.UseScore {
+					err = request.CommunityExchange(webToken, exchangeItem.ExchangeId)
+					if err != nil {
+						return nil, errors.WithStack(err)
+					}
+					messageList = append(messageList, fmt.Sprintf("消耗积分%d，成功兑换『%s*%d』", exchangeItem.ItemName, exchangeItem.ItemCount))
+				} else {
+					messageList = append(messageList, fmt.Sprintf("积分不足%d，无法兑换『%s*%d』", exchangeItem.UseScore, exchangeItem.ItemName, exchangeItem.ItemCount))
+				}
 			}
 		}
 	}

@@ -2,7 +2,6 @@ package request
 
 import (
 	"encoding/json"
-	"gf2gacha/model"
 	"github.com/pkg/errors"
 )
 
@@ -32,7 +31,7 @@ type CommunityUserInfoData struct {
 	} `json:"user"`
 }
 
-func CommunityUserInfo(webToken string) (userInfo model.UserInfo, err error) {
+func CommunityUserInfo(webToken string) (CommunityUserInfoData, error) {
 	apiUrl := `https://gf2-bbs-api.sunborngame.com/community/member/info`
 	params := map[string]interface{}{
 		"uid": 0,
@@ -40,17 +39,14 @@ func CommunityUserInfo(webToken string) (userInfo model.UserInfo, err error) {
 
 	dataBytes, err := CommunityPost(apiUrl, params, webToken)
 	if err != nil {
-		return model.UserInfo{}, errors.WithStack(err)
+		return CommunityUserInfoData{}, errors.WithStack(err)
 	}
 
 	var data CommunityUserInfoData
 	err = json.Unmarshal(dataBytes, &data)
 	if err != nil {
-		return model.UserInfo{}, errors.WithStack(err)
+		return CommunityUserInfoData{}, errors.WithStack(err)
 	}
 
-	return model.UserInfo{
-		Uid:  data.User.GameUid,
-		Name: data.User.GameNickName,
-	}, nil
+	return data, nil
 }
