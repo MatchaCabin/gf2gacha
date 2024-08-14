@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	logFile, err := os.Create("gf2gacha.log")
+	logFile, err := os.OpenFile("gf2gacha.log", os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		panic(err)
 	}

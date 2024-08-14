@@ -99,3 +99,21 @@ func (a *App) HandleCommunityTasks() (messageList []string, err error) {
 	}
 	return
 }
+
+func (a *App) CheckUpdate() (string, error) {
+	version, err := logic.CheckUpdate()
+	if err != nil {
+		logrus.Error(err)
+		return "", err
+	}
+	return version, nil
+}
+
+func (a *App) ApplyUpdate() (string, error) {
+	err := logic.ApplyUpdate()
+	if err != nil {
+		logrus.Error(err)
+		return "", err
+	}
+	return "", nil
+}

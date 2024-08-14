@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
-import {GetLogInfo, GetPoolInfo, GetUserList, HandleCommunityTasks, IncrementalUpdatePoolInfo, MergeEreRecord} from "../wailsjs/go/main/App";
+import {ApplyUpdate, CheckUpdate, GetLogInfo, GetPoolInfo, GetUserList, HandleCommunityTasks, IncrementalUpdatePoolInfo, MergeEreRecord} from "../wailsjs/go/main/App";
 import PoolCard from "./components/PoolCard.vue";
 import {model} from "../wailsjs/go/models";
 import 'element-plus/es/components/message/style/css'
@@ -16,6 +16,7 @@ const poolList = ref<Pool[]>([]);
 const logInfo = ref<LogInfo>({})
 const loading = ref(false);
 const dialogInfoVisible = ref(false)
+const newVersion = ref('')
 
 const getUidList = async () => {
   await GetUserList().then(result => {
@@ -106,12 +107,25 @@ const handleCommunityTasks = () => {
   })
 }
 
+const checkUpdate = () => {
+  CheckUpdate().then(result => {
+    newVersion.value = result
+  })
+}
+
+const applyUpdate = async () => {
+  loading.value = true
+  await ApplyUpdate()
+  loading.value = false
+}
+
 onMounted(async () => {
   await getUidList()
   if (uidList.value.length > 0) {
     currentUid.value = uidList.value[0]
     await getAllPoolInfo()
   }
+  checkUpdate()
 })
 
 </script>
@@ -123,7 +137,7 @@ onMounted(async () => {
         <el-button type="success" class="font-bold" @click="incrementalUpdatePoolInfo">增量更新</el-button>
         <el-button type="primary" class="font-bold" disabled>全量更新</el-button>
         <el-dropdown class="ml-3">
-          <el-button type="danger">导入导出</el-button>
+          <el-button type="danger" class="font-bold">导入导出</el-button>
           <template #dropdown>
             <el-dropdown-menu :disabled="!currentUid">
               <el-dropdown-item @click="mergeEreRecord('json')">导入EreJson</el-dropdown-item>
@@ -133,6 +147,7 @@ onMounted(async () => {
             </el-dropdown-menu>
           </template>
         </el-dropdown>
+        <el-button type="warning" class="font-bold ml-3" v-if="newVersion" @click="applyUpdate">更新到{{newVersion}}</el-button>
       </div>
       <div class="flex items-center gap-2">
         <el-button type="primary" class="font-bold" @click="handleCommunityTasks">一键社区</el-button>
