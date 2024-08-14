@@ -13,6 +13,9 @@ var (
 	ItemMap     = make(map[int64]*pb.ItemDataUnit)
 	UpItemMap   = make(map[int64]int64)
 	ItemRankMap = make(map[int64]map[int64]int64)
+
+	DollNameMapping   = make(map[string]int64)
+	WeaponNameMapping = make(map[string]int64)
 )
 
 func init() {
@@ -35,8 +38,14 @@ func init() {
 	if err != nil {
 		logrus.Panic(err)
 	}
-	for i, unit := range itemData.Units {
-		ItemMap[unit.Id] = itemData.Units[i]
+	for i, item := range itemData.Units {
+		ItemMap[item.Id] = itemData.Units[i]
+		switch item.Type {
+		case 10:
+			DollNameMapping[LangMap[item.Name.Id]] = item.Id
+		case 20:
+			WeaponNameMapping[LangMap[item.Name.Id]] = item.Id
+		}
 	}
 
 	var gachaData pb.GachaData

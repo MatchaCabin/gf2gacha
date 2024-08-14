@@ -5,8 +5,10 @@ import (
 	"gf2gacha/logic"
 	"gf2gacha/model"
 	"gf2gacha/util"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"strings"
 )
 
 // App struct
@@ -61,26 +63,32 @@ func (a *App) IncrementalUpdatePoolInfo() string {
 	return uid
 }
 
-func (a *App) MergeEreRecord(uid string) {
-	erePath, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
-		Title: "请选择Exilium Recruit Export的数据文件",
-		Filters: []runtime.FileFilter{
-			{
-				DisplayName: "EreData(*.json)",
-				Pattern:     "*.json",
-			},
-		},
-	})
+func (a *App) MergeEreRecord(uid, typ string) (message string, err error) {
+	var fileOption runtime.OpenDialogOptions
+	switch strings.ToLower(typ) {
+	case "json":
+		fileOption.Title = "请选择Exilium Recruit Export的Json文件"
+		fileOption.Filters = []runtime.FileFilter{{DisplayName: "EreJsonData", Pattern: "*.json"}}
+	case "excel":
+		fileOption.Title = "请选择Exilium Recruit Export的Excel文件"
+		fileOption.Filters = []runtime.FileFilter{{DisplayName: "EreExcelData", Pattern: "*.xlsx"}}
+	default:
+		return "", errors.Errorf("unknown type: %s", typ)
+	}
+	erePath, err := runtime.OpenFileDialog(a.ctx, fileOption)
 	if err != nil {
 		logrus.Error(err)
 		return
 	}
 
-	err = logic.MergeEreRecord(uid, erePath)
+	err = logic.MergeEreRecord(uid, erePath, typ)
 	if err != nil {
 		logrus.Error(err)
 		return
 	}
+
+	message = "合并成功"
+	return
 }
 
 func (a *App) HandleCommunityTasks() (messageList []string, err error) {

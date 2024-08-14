@@ -22,6 +22,6 @@ export function IncrementalUpdatePoolInfo() {
   return window['go']['main']['App']['IncrementalUpdatePoolInfo']();
 }
 
-export function MergeEreRecord(arg1) {
-  return window['go']['main']['App']['MergeEreRecord'](arg1);
+export function MergeEreRecord(arg1, arg2) {
+  return window['go']['main']['App']['MergeEreRecord'](arg1, arg2);
 }

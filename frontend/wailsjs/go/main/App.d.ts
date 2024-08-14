@@ -12,4 +12,4 @@ export function HandleCommunityTasks():Promise<Array<string>>;
 
 export function IncrementalUpdatePoolInfo():Promise<string>;
 
-export function MergeEreRecord(arg1:string):Promise<void>;
+export function MergeEreRecord(arg1:string,arg2:string):Promise<string>;

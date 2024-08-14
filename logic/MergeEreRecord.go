@@ -6,17 +6,30 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"os"
+	"strings"
 )
 
-func MergeEreRecord(uid, erePath string) error {
-	ereJsonData, err := os.ReadFile(erePath)
+func MergeEreRecord(uid, erePath, typ string) error {
+	ereFileData, err := os.ReadFile(erePath)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
-	ereRecordList, err := ParseEreData(ereJsonData)
-	if err != nil {
-		return errors.WithStack(err)
+	var ereRecordList []model.LocalRecord
+
+	switch strings.ToLower(typ) {
+	case "json":
+		ereRecordList, err = ParseEreJsonData(ereFileData)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+	case "excel":
+		ereRecordList, err = ParseEreExcelData(ereFileData)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+	default:
+		return errors.Errorf("unknown ere type: %s", typ)
 	}
 
 	//解析成功后先做备份
@@ -40,19 +53,19 @@ func MergeEreRecord(uid, erePath string) error {
 		}
 	}
 
-	err = mergeEreRecord(uid, 1, erePool1RecordList)
+	err = mergeEreJsonRecord(uid, 1, erePool1RecordList)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	err = mergeEreRecord(uid, 3, erePool3RecordList)
+	err = mergeEreJsonRecord(uid, 3, erePool3RecordList)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	err = mergeEreRecord(uid, 4, erePool4RecordList)
+	err = mergeEreJsonRecord(uid, 4, erePool4RecordList)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	err = mergeEreRecord(uid, 5, erePool5RecordList)
+	err = mergeEreJsonRecord(uid, 5, erePool5RecordList)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -60,7 +73,7 @@ func MergeEreRecord(uid, erePath string) error {
 	return nil
 }
 
-func mergeEreRecord(uid string, poolType int64, ereRecordList []model.LocalRecord) error {
+func mergeEreJsonRecord(uid string, poolType int64, ereRecordList []model.LocalRecord) error {
 	if len(ereRecordList) == 0 {
 		return nil
 	}

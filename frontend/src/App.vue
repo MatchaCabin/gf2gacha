@@ -72,12 +72,12 @@ const openInfoDialog = async () => {
   dialogInfoVisible.value = true
 }
 
-const mergeEreRecord = async () => {
+const mergeEreRecord = async (typ: string) => {
   loading.value = true
-  await MergeEreRecord(currentUid.value).then(() => {
-    ElMessage({message: '合并成功', type: 'success', plain: true, showClose: true, duration: 1000})
+  await MergeEreRecord(currentUid.value,typ).then(() => {
+    ElMessage({message: '合并成功', type: 'success', plain: true, showClose: true, duration: 2000})
   }).catch(() => {
-    ElMessage({message: '合并发生错误', type: 'error', plain: true, showClose: true, duration: 1000})
+    ElMessage({message: '合并发生错误', type: 'error', plain: true, showClose: true, duration: 2000})
   })
   await getAllPoolInfo()
   loading.value = false
@@ -124,11 +124,17 @@ onMounted(async () => {
       <div class="grow">
         <el-button type="success" class="font-bold" @click="incrementalUpdatePoolInfo">增量更新</el-button>
         <el-button type="primary" class="font-bold" disabled>全量更新</el-button>
-        <el-popconfirm class="text-red-600" width="360" confirm-button-text="确定" cancel-button-text="取消" :title="`确定将数据合并进当前用户(UID:${currentUid})?`" @confirm="mergeEreRecord">
-          <template #reference>
-            <el-button type="danger" class="font-bold" :disabled="!currentUid">导入ERE数据</el-button>
+        <el-dropdown class="ml-3">
+          <el-button type="danger">导入导出</el-button>
+          <template #dropdown>
+            <el-dropdown-menu :disabled="!currentUid">
+              <el-dropdown-item @click="mergeEreRecord('json')">导入EreJson</el-dropdown-item>
+              <el-dropdown-item @click="mergeEreRecord('excel')">导入EreExcel</el-dropdown-item>
+              <el-dropdown-item divided disabled>导出Json</el-dropdown-item>
+              <el-dropdown-item divided disabled>导出Excel</el-dropdown-item>
+            </el-dropdown-menu>
           </template>
-        </el-popconfirm>
+        </el-dropdown>
       </div>
       <div class="flex items-center gap-2">
         <el-button type="primary" class="font-bold" @click="handleCommunityTasks">一键社区</el-button>
@@ -144,9 +150,13 @@ onMounted(async () => {
     </div>
     <el-dialog v-model="dialogInfoVisible" width="600">
       <template #title>
-        <div class="text-xl font-bold">当前日志信息</div>
+        <div class="text-xl font-bold">关于</div>
       </template>
       <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-2">
+          <div class="w-24 shrink-0">项目地址</div>
+          <div class="grow text-blue-500">https://github.com/MatchaCabin/gf2gacha</div>
+        </div>
         <div class="flex items-center gap-2">
           <div class="w-24 shrink-0">UID</div>
           <el-input class="grow" readonly v-model="logInfo.uid"/>
@@ -162,7 +172,7 @@ onMounted(async () => {
           <el-input class="grow" readonly type="password" v-model="logInfo.accessToken"/>
           <el-button text :icon="CopyDocument" circle @click="copyAccessToken"/>
         </div>
-        <el-alert title="请勿随意泄露AccessToken，虽然操作上有难度，但理论上可以融号" type="warning" show-icon :closable="false"></el-alert>
+        <el-alert title="AccessToken是您的临时登录凭证，请自行把控风险，切勿随意泄露" type="warning" show-icon :closable="false"></el-alert>
       </div>
     </el-dialog>
   </div>

@@ -25,7 +25,12 @@ func HandleCommunityTasks() (messageList []string, err error) {
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	messageList = append(messageList, fmt.Sprintf("当前用户: %s (UID:%d)", userInfo.User.GameNickName, userInfo.User.GameUid))
+
+	signData, err := request.CommunitySign(webToken)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	messageList = append(messageList, fmt.Sprintf("%s(UID:%d)签到成功，获得%s*%d", userInfo.User.GameNickName, userInfo.User.GameUid, signData.GetItemName, signData.GetItemCount))
 
 	taskListData, err := request.CommunityTaskList(webToken)
 	if err != nil {

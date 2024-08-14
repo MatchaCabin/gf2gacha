@@ -13,7 +13,7 @@ func BackupDB() error {
 		return errors.WithStack(err)
 	}
 
-	backupName := fmt.Sprintf("gf2gacha_%d.db", time.Now().UnixNano())
+	backupName := fmt.Sprintf("gf2gacha_backup%s.db", time.Now().Format("20060102150405"))
 	err = os.WriteFile(backupName, dbData, 0755)
 	if err != nil {
 		return errors.WithStack(err)

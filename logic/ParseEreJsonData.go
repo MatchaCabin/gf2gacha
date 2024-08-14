@@ -7,8 +7,15 @@ import (
 	"strconv"
 )
 
-func ParseEreData(ereJsonData []byte) ([]model.LocalRecord, error) {
-	var ereData model.Ere
+type ereJsonStruct struct {
+	Result  [][]interface{} `json:"result"`
+	Time    int64           `json:"time"`
+	TypeMap [][]string      `json:"typeMap"`
+	Account string          `json:"account"`
+}
+
+func ParseEreJsonData(ereJsonData []byte) ([]model.LocalRecord, error) {
+	var ereData ereJsonStruct
 	err := json.Unmarshal(ereJsonData, &ereData)
 	if err != nil {
 		return nil, errors.WithStack(err)
