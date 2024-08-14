@@ -74,7 +74,7 @@ const openInfoDialog = async () => {
 
 const mergeEreRecord = async (typ: string) => {
   loading.value = true
-  await MergeEreRecord(currentUid.value,typ).then(() => {
+  await MergeEreRecord(currentUid.value, typ).then(() => {
     ElMessage({message: '合并成功', type: 'success', plain: true, showClose: true, duration: 2000})
   }).catch(() => {
     ElMessage({message: '合并发生错误', type: 'error', plain: true, showClose: true, duration: 2000})
@@ -100,9 +100,7 @@ const copyAccessToken = () => {
 
 const handleCommunityTasks = () => {
   HandleCommunityTasks().then(result => {
-    result.forEach(message => {
-      ElMessage({message: message, type: 'success', plain: true, showClose: true, duration: 3000})
-    })
+    ElMessage({message: result.join("<br/>"), type: 'success', plain: true, showClose: true, duration: 3000, dangerouslyUseHTMLString: true})
   }).catch(err => {
     ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 3000})
   })
@@ -131,7 +129,7 @@ onMounted(async () => {
               <el-dropdown-item @click="mergeEreRecord('json')">导入EreJson</el-dropdown-item>
               <el-dropdown-item @click="mergeEreRecord('excel')">导入EreExcel</el-dropdown-item>
               <el-dropdown-item divided disabled>导出Json</el-dropdown-item>
-              <el-dropdown-item divided disabled>导出Excel</el-dropdown-item>
+              <el-dropdown-item disabled>导出Excel</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
