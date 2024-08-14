@@ -9,6 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
+	"os/exec"
 )
 
 func ApplyUpdate() error {
@@ -22,35 +23,67 @@ func ApplyUpdate() error {
 		return nil
 	}
 
-	var dl string
+	var link string
 	for _, asset := range release.Assets {
 		if asset.GetName() == "gf2gacha.exe" {
-			dl = asset.GetBrowserDownloadURL()
+			link = asset.GetBrowserDownloadURL()
 			break
 		}
 	}
 
-	if dl != "" {
-		logrus.Infof("下载链接:%s", dl)
-		resp, err := http.Get(dl)
+	if link != "" {
+		proxyLink := `https://mirror.ghproxy.com/` + link
+		logrus.Infof("代理链接:%s", proxyLink)
+		//优先尝试用国内代理下载
+		respProxy, err := http.Get(proxyLink)
 		if os.IsTimeout(err) {
-			//如果超时，尝试用国内代理下载
-			respProxy, err := http.Get(`https://mirror.ghproxy.com/` + dl)
+			logrus.Infof("源链接:%s", link)
+			resp, err := http.Get(link)
 			if err != nil {
 				return errors.WithStack(err)
 			}
-			defer respProxy.Body.Close()
+			defer resp.Body.Close()
+			logrus.Infof("下载成功")
+			err = update.Apply(respProxy.Body, update.Options{})
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			logrus.Infof("更新成功")
 
+			err = restart()
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			logrus.Infof("重启成功")
+			os.Exit(1)
 		} else if err != nil {
 			return errors.WithStack(err)
 		}
-		defer resp.Body.Close()
+		defer respProxy.Body.Close()
+		logrus.Infof("使用代理下载成功")
 
-		err = update.Apply(resp.Body, update.Options{})
+		err = update.Apply(respProxy.Body, update.Options{})
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		logrus.Infof("更新成功")
+
+		err = restart()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		logrus.Infof("重启成功")
+		os.Exit(1)
 	}
 
 	return nil
+}
+
+func restart() error {
+	execPath, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	cmd := exec.Command(execPath)
+	return cmd.Start()
 }

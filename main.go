@@ -2,7 +2,9 @@ package main
 
 import (
 	"embed"
+	"fmt"
 	_ "gf2gacha/logger"
+	"gf2gacha/util"
 	"github.com/sirupsen/logrus"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -18,7 +20,7 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:     "少女前线2:追放 抽卡导出分析工具 Powered by MccWiki抹茶",
+		Title:     fmt.Sprintf("少女前线2:追放 抽卡导出分析工具%v Powered by MccWiki抹茶", util.GetVersion()),
 		Width:     1280,
 		Height:    720,
 		MinWidth:  1280,
