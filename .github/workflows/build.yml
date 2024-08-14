@@ -49,3 +49,4 @@ jobs:
           prerelease: false
           files: |
             gf2gacha.zip
+            .\build\bin\gf2gacha.exe
