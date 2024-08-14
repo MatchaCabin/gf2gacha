@@ -35,7 +35,8 @@ jobs:
       - name: Create folder and copy files
         run: |
           mkdir gf2gacha
-          xcopy .\build\bin\* .\gf2gacha\ /y
+          xcopy .\build\bin\gf2gacha.exe .\gf2gacha\ /y
+          xcopy .\build\bin\gf2gacha.exe . /y
 
       - name: Zip the folder
         run: powershell Compress-Archive -Path gf2gacha -DestinationPath gf2gacha.zip
@@ -49,4 +50,4 @@ jobs:
           prerelease: false
           files: |
             gf2gacha.zip
-            .\build\bin\gf2gacha.exe
+            gf2gacha.exe
