@@ -21,17 +21,6 @@ func HandleCommunityTasks() (messageList []string, err error) {
 		return nil, errors.WithStack(err)
 	}
 
-	userInfo, err := request.CommunityUserInfo(webToken)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	signData, err := request.CommunitySign(webToken)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-	messageList = append(messageList, fmt.Sprintf("%s(UID:%d)签到成功，获得%s*%d", userInfo.User.GameNickName, userInfo.User.GameUid, signData.GetItemName, signData.GetItemCount))
-
 	taskListData, err := request.CommunityTaskList(webToken)
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -92,7 +81,17 @@ func HandleCommunityTasks() (messageList []string, err error) {
 		}
 	}
 
-	messageList = append(messageList, "社区任务和兑换完成")
+	userInfo, err := request.CommunityUserInfo(webToken)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	signData, err := request.CommunitySign(webToken)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	messageList = append(messageList, fmt.Sprintf("%s(UID:%d)签到成功，获得%s*%d", userInfo.User.GameNickName, userInfo.User.GameUid, signData.GetItemName, signData.GetItemCount))
+
 	return messageList, nil
 }
 

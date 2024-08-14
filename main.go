@@ -2,27 +2,15 @@ package main
 
 import (
 	"embed"
+	_ "gf2gacha/logger"
 	"github.com/sirupsen/logrus"
 	"github.com/wailsapp/wails/v2"
-	"io"
-	"os"
-
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
-
-func init() {
-	logFile, err := os.Create("gf2gacha.log")
-	if err != nil {
-		panic(err)
-	}
-	mw := io.MultiWriter(os.Stdout, logFile)
-	logrus.SetOutput(mw)
-	logrus.SetFormatter(&logrus.TextFormatter{})
-}
 
 func main() {
 	// Create an instance of the app structure
