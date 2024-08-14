@@ -36,7 +36,7 @@ func ParseEreExcelData(ereExcelData []byte) ([]model.LocalRecord, error) {
 			return nil, errors.WithStack(err)
 		}
 
-		var fieldMapping map[string]int
+		fieldMapping := make(map[string]int)
 		for rowIndex, row := range rows {
 			//先获取标题栏索引值，以防止有乱序的情况
 			if rowIndex == 0 {

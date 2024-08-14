@@ -13,7 +13,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	mw := io.MultiWriter(os.Stdout, logFile)
+	mw := io.MultiWriter(logFile, os.Stdout)
 	Logger = logrus.New()
 	Logger.SetOutput(mw)
 	Logger.SetFormatter(&logrus.TextFormatter{})
