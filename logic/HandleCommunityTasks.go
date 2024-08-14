@@ -2,10 +2,10 @@ package logic
 
 import (
 	"fmt"
+	"gf2gacha/logger"
 	"gf2gacha/request"
 	"gf2gacha/util"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"sort"
 	"time"
 )
@@ -47,7 +47,7 @@ func HandleCommunityTasks() (messageList []string, err error) {
 				}
 				messageList = append(messageList, shareMessageList...)
 			default:
-				logrus.Errorf("未知的社区任务%s", dailyTask.TaskName)
+				logger.Logger.Errorf("未知的社区任务%s", dailyTask.TaskName)
 			}
 		}
 	}

@@ -1,9 +1,9 @@
 package preload
 
 import (
+	"gf2gacha/logger"
 	"gf2gacha/pb"
 	"gf2gacha/util"
-	"github.com/sirupsen/logrus"
 	"strconv"
 	"strings"
 )
@@ -21,13 +21,13 @@ var (
 func init() {
 	info, err := util.GetLogInfo()
 	if err != nil {
-		logrus.Panic(err)
+		logger.Logger.Panic(err)
 	}
 
 	var langCNData pb.LangPackageTableCnData
 	err = util.GetTableData(info.TablePath, &langCNData)
 	if err != nil {
-		logrus.Panic(err)
+		logger.Logger.Panic(err)
 	}
 	for i, unit := range langCNData.Units {
 		LangMap[unit.Id] = langCNData.Units[i].Content
@@ -36,7 +36,7 @@ func init() {
 	var itemData pb.ItemData
 	err = util.GetTableData(info.TablePath, &itemData)
 	if err != nil {
-		logrus.Panic(err)
+		logger.Logger.Panic(err)
 	}
 	for i, item := range itemData.Units {
 		ItemMap[item.Id] = itemData.Units[i]
@@ -51,7 +51,7 @@ func init() {
 	var gachaData pb.GachaData
 	err = util.GetTableData(info.TablePath, &gachaData)
 	if err != nil {
-		logrus.Panic(err)
+		logger.Logger.Panic(err)
 	}
 	for _, unit := range gachaData.Units {
 		//等级为5在卡池中不一定算5星，比如神秘箱中的导体5/6，因此需要从卡池道具列表中提取等级
@@ -74,7 +74,7 @@ func init() {
 				dollStringGroup = strings.TrimPrefix(rateDollStringGroup, "3:")
 			default:
 				if rateDollStringGroup != "" {
-					logrus.Errorf("未知的人形掉落列表:%s", rateDollStringGroup)
+					logger.Logger.Errorf("未知的人形掉落列表:%s", rateDollStringGroup)
 				}
 				continue
 			}
@@ -82,7 +82,7 @@ func init() {
 			for _, dollString := range dollStringList {
 				dollId, err := strconv.ParseInt(dollString, 10, 64)
 				if err != nil {
-					logrus.Panic(err)
+					logger.Logger.Panic(err)
 				}
 				ItemRankMap[unit.Id][dollId] = rank
 			}
@@ -105,7 +105,7 @@ func init() {
 				weaponStringGroup = strings.TrimPrefix(rateWeaponStringGroup, "3:")
 			default:
 				if rateWeaponStringGroup != "" {
-					logrus.Errorf("未知的道具等级列表:%s", rateWeaponStringGroup)
+					logger.Logger.Errorf("未知的道具等级列表:%s", rateWeaponStringGroup)
 				}
 				continue
 			}
@@ -113,7 +113,7 @@ func init() {
 			for _, weaponString := range weaponStringList {
 				weaponId, err := strconv.ParseInt(weaponString, 10, 64)
 				if err != nil {
-					logrus.Panic(err)
+					logger.Logger.Panic(err)
 				}
 				ItemRankMap[unit.Id][weaponId] = rank
 			}
@@ -133,7 +133,7 @@ func init() {
 					upItemString := strings.TrimPrefix(upItemGroup, "5:")
 					upItemId, err := strconv.ParseInt(upItemString, 10, 64)
 					if err != nil {
-						logrus.Panic(err)
+						logger.Logger.Panic(err)
 					}
 					UpItemMap[unit.Id] = upItemId
 					break

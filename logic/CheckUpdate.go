@@ -2,10 +2,10 @@ package logic
 
 import (
 	"context"
+	"gf2gacha/logger"
 	"gf2gacha/util"
 	"github.com/google/go-github/v63/github"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -15,7 +15,7 @@ func CheckUpdate() (string, error) {
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
-	logrus.Infof("Latest release: %s", *release.TagName)
+	logger.Logger.Infof("Latest release: %s", *release.TagName)
 
 	if util.GetVersion() != release.GetTagName() {
 		return release.GetTagName(), nil

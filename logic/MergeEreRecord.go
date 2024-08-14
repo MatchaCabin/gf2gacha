@@ -1,10 +1,10 @@
 package logic
 
 import (
+	"gf2gacha/logger"
 	"gf2gacha/model"
 	"gf2gacha/util"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"os"
 	"strings"
 )
@@ -105,7 +105,7 @@ func mergeEreJsonRecord(uid string, poolType int64, ereRecordList []model.LocalR
 			}
 		}
 	}
-	logrus.Infof("本地第一条:%+v, seq:%d", firstLocalRecord, firstLocalRecordSequence)
+	logger.Logger.Infof("本地第一条:%+v, seq:%d", firstLocalRecord, firstLocalRecordSequence)
 
 	var mergeLocalRecordList []model.LocalRecord
 
@@ -120,7 +120,7 @@ func mergeEreJsonRecord(uid string, poolType int64, ereRecordList []model.LocalR
 
 		//抽卡时间一致，道具一致，十连中的序号一致，则判断为同一条
 		if ereRecord.GachaTimestamp == firstLocalRecord.GachaTimestamp && ereRecord.ItemId == firstLocalRecord.ItemId && ereRecordSequence == firstLocalRecordSequence {
-			logrus.Infof("ERE最后一条:%+v, seq:%d", ereRecord, ereRecordSequence)
+			logger.Logger.Infof("ERE最后一条:%+v, seq:%d", ereRecord, ereRecordSequence)
 			break
 		}
 		mergeLocalRecordList = append(mergeLocalRecordList, ereRecordList[i])

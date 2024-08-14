@@ -6,12 +6,15 @@ import (
 	"os"
 )
 
+var Logger *logrus.Logger
+
 func init() {
-	logFile, err := os.OpenFile("gf2gacha.log", os.O_RDWR|os.O_CREATE, 0755)
+	logFile, err := os.Create("gf2gacha.log")
 	if err != nil {
 		panic(err)
 	}
 	mw := io.MultiWriter(os.Stdout, logFile)
-	logrus.SetOutput(mw)
-	logrus.SetFormatter(&logrus.TextFormatter{})
+	Logger = logrus.New()
+	Logger.SetOutput(mw)
+	Logger.SetFormatter(&logrus.TextFormatter{})
 }

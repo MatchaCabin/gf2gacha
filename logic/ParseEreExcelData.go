@@ -2,10 +2,10 @@ package logic
 
 import (
 	"bytes"
+	"gf2gacha/logger"
 	"gf2gacha/model"
 	"gf2gacha/preload"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"github.com/xuri/excelize/v2"
 	"strconv"
 )
@@ -28,7 +28,7 @@ func ParseEreExcelData(ereExcelData []byte) ([]model.LocalRecord, error) {
 		case "军备提升":
 			poolType = 4
 		default:
-			logrus.Warnf("未知Sheet名称:%s", sheetName)
+			logger.Logger.Warnf("未知Sheet名称:%s", sheetName)
 			continue
 		}
 		rows, err := reader.GetRows(sheetName)

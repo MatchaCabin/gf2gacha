@@ -3,9 +3,9 @@ package main
 import (
 	"embed"
 	"fmt"
+	"gf2gacha/logger"
 	_ "gf2gacha/logger"
 	"gf2gacha/util"
-	"github.com/sirupsen/logrus"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -35,6 +35,6 @@ func main() {
 	})
 
 	if err != nil {
-		logrus.Error(err)
+		logger.Logger.Error(err)
 	}
 }
