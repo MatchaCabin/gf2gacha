@@ -2,6 +2,7 @@ package logic
 
 import (
 	"fmt"
+	"gf2gacha/config"
 	"gf2gacha/logger"
 	"gf2gacha/request"
 	"gf2gacha/util"
@@ -52,34 +53,11 @@ func HandleCommunityTasks() (messageList []string, err error) {
 		}
 	}
 
-	exchangeListData, err := request.CommunityExchangeList(webToken)
+	exchangeMessageList, err := handleCommunityExchange(webToken)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	//按价值排序，优先兑换高价值道具
-	sort.Slice(exchangeListData.List, func(i, j int) bool {
-		return exchangeListData.List[i].UseScore > exchangeListData.List[j].UseScore
-	})
-	for _, exchangeItem := range exchangeListData.List {
-		if exchangeItem.ExchangeCount < exchangeItem.MaxExchangeCount {
-			for i := int64(0); i < exchangeItem.MaxExchangeCount-exchangeItem.ExchangeCount; i++ {
-				info, err := request.CommunityUserInfo(webToken)
-				if err != nil {
-					return nil, errors.WithStack(err)
-				}
-
-				if info.User.Score >= exchangeItem.UseScore {
-					err = request.CommunityExchange(webToken, exchangeItem.ExchangeId)
-					if err != nil {
-						return nil, errors.WithStack(err)
-					}
-					messageList = append(messageList, fmt.Sprintf("消耗积分%d，成功兑换『%s*%d』", exchangeItem.UseScore, exchangeItem.ItemName, exchangeItem.ItemCount))
-				} else {
-					messageList = append(messageList, fmt.Sprintf("积分不足%d，无法兑换『%s*%d』", exchangeItem.UseScore, exchangeItem.ItemName, exchangeItem.ItemCount))
-				}
-			}
-		}
-	}
+	messageList = append(messageList, exchangeMessageList...)
 
 	userInfo, err := request.CommunityUserInfo(webToken)
 	if err != nil {
@@ -172,6 +150,50 @@ func handleCommunityTaskShare(webToken string, times int64) (messageList []strin
 		count++
 		if count == times {
 			break
+		}
+	}
+
+	return messageList, nil
+}
+
+func handleCommunityExchange(webToken string) (messageList []string, err error) {
+	exchangeList := config.GetExchangeList()
+	exchangeMap := make(map[int64]struct{})
+	for _, itemId := range exchangeList {
+		exchangeMap[itemId] = struct{}{}
+	}
+
+	exchangeListData, err := request.CommunityExchangeList(webToken)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	//按价值排序，优先兑换高价值道具
+	sort.Slice(exchangeListData.List, func(i, j int) bool {
+		return exchangeListData.List[i].UseScore > exchangeListData.List[j].UseScore
+	})
+	for _, exchangeItem := range exchangeListData.List {
+		//如果不在用户设置里，那就跳过
+		if _, has := exchangeMap[exchangeItem.ExchangeId]; !has {
+			messageList = append(messageList, fmt.Sprintf("用户设置不兑换『%s*%d』", exchangeItem.ItemName, exchangeItem.ItemCount))
+			continue
+		}
+		if exchangeItem.ExchangeCount < exchangeItem.MaxExchangeCount {
+			for i := int64(0); i < exchangeItem.MaxExchangeCount-exchangeItem.ExchangeCount; i++ {
+				info, err := request.CommunityUserInfo(webToken)
+				if err != nil {
+					return nil, errors.WithStack(err)
+				}
+
+				if info.User.Score >= exchangeItem.UseScore {
+					err = request.CommunityExchange(webToken, exchangeItem.ExchangeId)
+					if err != nil {
+						return nil, errors.WithStack(err)
+					}
+					messageList = append(messageList, fmt.Sprintf("消耗积分%d，成功兑换『%s*%d』", exchangeItem.UseScore, exchangeItem.ItemName, exchangeItem.ItemCount))
+				} else {
+					messageList = append(messageList, fmt.Sprintf("积分不足%d，无法兑换『%s*%d』", exchangeItem.UseScore, exchangeItem.ItemName, exchangeItem.ItemCount))
+				}
+			}
 		}
 	}
 

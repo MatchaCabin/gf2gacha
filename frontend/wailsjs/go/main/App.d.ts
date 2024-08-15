@@ -6,9 +6,13 @@ export function ApplyUpdate():Promise<string>;
 
 export function CheckUpdate():Promise<string>;
 
+export function GetCommunityExchangeList():Promise<Array<model.CommunityExchangeList>>;
+
 export function GetLogInfo():Promise<model.LogInfo>;
 
 export function GetPoolInfo(arg1:string,arg2:number):Promise<model.Pool>;
+
+export function GetSettingExchangeList():Promise<Array<number>>;
 
 export function GetUserList():Promise<Array<string>>;
 
@@ -17,3 +21,5 @@ export function HandleCommunityTasks():Promise<Array<string>>;
 export function IncrementalUpdatePoolInfo():Promise<string>;
 
 export function MergeEreRecord(arg1:string,arg2:string):Promise<string>;
+
+export function SaveSettingExchangeList(arg1:Array<number>):Promise<void>;

@@ -10,12 +10,20 @@ export function CheckUpdate() {
   return window['go']['main']['App']['CheckUpdate']();
 }
 
+export function GetCommunityExchangeList() {
+  return window['go']['main']['App']['GetCommunityExchangeList']();
+}
+
 export function GetLogInfo() {
   return window['go']['main']['App']['GetLogInfo']();
 }
 
 export function GetPoolInfo(arg1, arg2) {
   return window['go']['main']['App']['GetPoolInfo'](arg1, arg2);
+}
+
+export function GetSettingExchangeList() {
+  return window['go']['main']['App']['GetSettingExchangeList']();
 }
 
 export function GetUserList() {
@@ -32,4 +40,8 @@ export function IncrementalUpdatePoolInfo() {
 
 export function MergeEreRecord(arg1, arg2) {
   return window['go']['main']['App']['MergeEreRecord'](arg1, arg2);
+}
+
+export function SaveSettingExchangeList(arg1) {
+  return window['go']['main']['App']['SaveSettingExchangeList'](arg1);
 }

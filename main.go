@@ -15,6 +15,7 @@ import (
 var assets embed.FS
 
 func main() {
+	defer logger.Logger.Sync()
 	// Create an instance of the app structure
 	app := NewApp()
 

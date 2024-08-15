@@ -1,21 +1,38 @@
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
-import {ApplyUpdate, CheckUpdate, GetLogInfo, GetPoolInfo, GetUserList, HandleCommunityTasks, IncrementalUpdatePoolInfo, MergeEreRecord} from "../wailsjs/go/main/App";
+import {
+  ApplyUpdate,
+  CheckUpdate,
+  GetCommunityExchangeList,
+  GetLogInfo,
+  GetPoolInfo,
+  GetSetting,
+  GetSettingExchangeList,
+  GetUserList,
+  HandleCommunityTasks,
+  IncrementalUpdatePoolInfo,
+  MergeEreRecord,
+  SaveSettingExchangeList
+} from "../wailsjs/go/main/App";
 import PoolCard from "./components/PoolCard.vue";
 import {model} from "../wailsjs/go/models";
 import 'element-plus/es/components/message/style/css'
 import {ElMessage} from "element-plus";
-import {Connection, CopyDocument} from "@element-plus/icons-vue";
+import {Connection, CopyDocument, Setting as SettingIcon} from "@element-plus/icons-vue";
 import {ClipboardSetText} from "../wailsjs/runtime";
 import Pool = model.Pool;
 import LogInfo = model.LogInfo;
+import CommunityExchangeList = model.CommunityExchangeList;
 
 const currentUid = ref("");
 const uidList = ref<string[]>([]);
 const poolList = ref<Pool[]>([]);
 const logInfo = ref<LogInfo>({})
+const exchangeList = ref<CommunityExchangeList[]>([])
+const exchangeSelectedList = ref<number[]>([])
 const loading = ref(false);
 const dialogInfoVisible = ref(false)
+const dialogSettingVisible = ref(false)
 const newVersion = ref('')
 
 const getUidList = async () => {
@@ -73,6 +90,15 @@ const openInfoDialog = async () => {
   dialogInfoVisible.value = true
 }
 
+const openSettingDialog = async () => {
+  await GetSettingExchangeList().then(result => {
+    if (result) {
+      exchangeSelectedList.value = result
+    }
+  })
+  dialogSettingVisible.value = true
+}
+
 const mergeEreRecord = async (typ: string) => {
   loading.value = true
   await MergeEreRecord(currentUid.value, typ).then(() => {
@@ -101,7 +127,7 @@ const copyAccessToken = () => {
 
 const handleCommunityTasks = () => {
   HandleCommunityTasks().then(result => {
-    ElMessage({message: result.join("<br/>"), type: 'success', plain: true, showClose: true, duration: 3000, dangerouslyUseHTMLString: true})
+    ElMessage({message: result.join("<br/>"), type: 'success', plain: true, showClose: true, duration: 0, dangerouslyUseHTMLString: true})
   }).catch(err => {
     ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 3000})
   })
@@ -119,6 +145,10 @@ const applyUpdate = async () => {
   loading.value = false
 }
 
+const onExchangeListChange =() => {
+  SaveSettingExchangeList(exchangeSelectedList.value)
+}
+
 onMounted(async () => {
   await getUidList()
   if (uidList.value.length > 0) {
@@ -126,6 +156,9 @@ onMounted(async () => {
     await getAllPoolInfo()
   }
   checkUpdate()
+  GetCommunityExchangeList().then(result => {
+    exchangeList.value = result
+  })
 })
 
 </script>
@@ -147,7 +180,7 @@ onMounted(async () => {
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-        <el-button type="warning" class="font-bold ml-3" v-if="newVersion" @click="applyUpdate">更新到{{newVersion}}</el-button>
+        <el-button type="warning" class="font-bold ml-3" v-if="newVersion" @click="applyUpdate">更新到{{ newVersion }}</el-button>
       </div>
       <div class="flex items-center gap-2">
         <el-button type="primary" class="font-bold" @click="handleCommunityTasks">一键社区</el-button>
@@ -156,13 +189,14 @@ onMounted(async () => {
           <el-option v-for="uid in uidList" :key="uid" :label="uid" :value="uid"/>
         </el-select>
         <el-button text :icon="Connection" circle @click="openInfoDialog"/>
+        <el-button class="!ml-0" text :icon="SettingIcon" circle @click="openSettingDialog"/>
       </div>
     </div>
     <div class="w-full flex flex-wrap gap-4">
       <PoolCard v-for="pool in poolList" :pool="pool"></PoolCard>
     </div>
     <el-dialog v-model="dialogInfoVisible" width="600">
-      <template #title>
+      <template #header>
         <div class="text-xl font-bold">关于</div>
       </template>
       <div class="flex flex-col gap-4">
@@ -186,6 +220,21 @@ onMounted(async () => {
           <el-button text :icon="CopyDocument" circle @click="copyAccessToken"/>
         </div>
         <el-alert title="AccessToken是您的临时登录凭证，请自行把控风险，切勿随意泄露" type="warning" show-icon :closable="false"></el-alert>
+      </div>
+    </el-dialog>
+    <el-dialog v-model="dialogSettingVisible" width="600">
+      <template #header>
+        <div class="text-xl font-bold">设置</div>
+      </template>
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-2">
+          <div class="w-24 shrink-0">社区兑换</div>
+          <div class="grow text-blue-500">
+            <el-checkbox-group v-model="exchangeSelectedList" @change="onExchangeListChange">
+              <el-checkbox v-for="item in exchangeList" :label="item.name" :value="item.id"></el-checkbox>
+            </el-checkbox-group>
+          </div>
+        </div>
       </div>
     </el-dialog>
   </div>

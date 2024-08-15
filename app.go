@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"gf2gacha/config"
 	"gf2gacha/logger"
 	"gf2gacha/logic"
 	"gf2gacha/model"
@@ -116,4 +117,21 @@ func (a *App) ApplyUpdate() (string, error) {
 		return "", err
 	}
 	return "", nil
+}
+
+func (a *App) GetCommunityExchangeList() ([]model.CommunityExchangeList, error) {
+	list, err := logic.GetCommunityExchangeList()
+	if err != nil {
+		logger.Logger.Error(err)
+		return nil, err
+	}
+	return list, nil
+}
+
+func (a *App) GetSettingExchangeList() []int64 {
+	return config.GetExchangeList()
+}
+
+func (a *App) SaveSettingExchangeList(exchangeList []int64) error {
+	return config.SetExchangeList(exchangeList)
 }
