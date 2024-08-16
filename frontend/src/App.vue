@@ -6,7 +6,6 @@ import {
   GetCommunityExchangeList,
   GetLogInfo,
   GetPoolInfo,
-  GetSetting,
   GetSettingExchangeList,
   GetUserList,
   HandleCommunityTasks,
@@ -95,6 +94,8 @@ const openSettingDialog = async () => {
     if (result) {
       exchangeSelectedList.value = result
     }
+  }).catch(err => {
+    ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 0})
   })
   dialogSettingVisible.value = true
 }
@@ -104,7 +105,7 @@ const mergeEreRecord = async (typ: string) => {
   await MergeEreRecord(currentUid.value, typ).then(() => {
     ElMessage({message: '合并成功', type: 'success', plain: true, showClose: true, duration: 2000})
   }).catch(() => {
-    ElMessage({message: '合并发生错误', type: 'error', plain: true, showClose: true, duration: 2000})
+    ElMessage({message: '合并发生错误', type: 'error', plain: true, showClose: true, duration: 0})
   })
   await getAllPoolInfo()
   loading.value = false
@@ -129,7 +130,7 @@ const handleCommunityTasks = () => {
   HandleCommunityTasks().then(result => {
     ElMessage({message: result.join("<br/>"), type: 'success', plain: true, showClose: true, duration: 0, dangerouslyUseHTMLString: true})
   }).catch(err => {
-    ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 3000})
+    ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 0})
   })
 }
 
@@ -145,7 +146,7 @@ const applyUpdate = async () => {
   loading.value = false
 }
 
-const onExchangeListChange =() => {
+const onExchangeListChange = () => {
   SaveSettingExchangeList(exchangeSelectedList.value)
 }
 

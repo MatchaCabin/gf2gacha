@@ -33,6 +33,10 @@ func SetToken(uid, token string) error {
 	return viper.WriteConfig()
 }
 
+func IsSetExchangeList() bool {
+	return viper.IsSet("exchangeList")
+}
+
 func GetExchangeList() []int64 {
 	intList := viper.GetIntSlice("exchangeList")
 	var int64List []int64

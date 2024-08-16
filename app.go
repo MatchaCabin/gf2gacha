@@ -128,8 +128,25 @@ func (a *App) GetCommunityExchangeList() ([]model.CommunityExchangeList, error) 
 	return list, nil
 }
 
-func (a *App) GetSettingExchangeList() []int64 {
-	return config.GetExchangeList()
+func (a *App) GetSettingExchangeList() ([]int64, error) {
+	if !config.IsSetExchangeList() {
+		exchangeList, err := logic.GetCommunityExchangeList()
+		if err != nil {
+			logger.Logger.Error(err)
+			return nil, err
+		}
+		var idList []int64
+		for _, item := range exchangeList {
+			idList = append(idList, item.Id)
+		}
+		err = config.SetExchangeList(idList)
+		if err != nil {
+			logger.Logger.Error(err)
+			return nil, err
+		}
+	}
+
+	return config.GetExchangeList(), nil
 }
 
 func (a *App) SaveSettingExchangeList(exchangeList []int64) error {
