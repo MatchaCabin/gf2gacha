@@ -27,6 +27,8 @@ func ParseEreExcelData(ereExcelData []byte) ([]model.LocalRecord, error) {
 			poolType = 3
 		case "军备提升":
 			poolType = 4
+		case "初始采购":
+			poolType = 5
 		default:
 			logger.Logger.Warnf("未知Sheet名称:%s", sheetName)
 			continue
