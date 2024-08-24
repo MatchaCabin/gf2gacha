@@ -66,7 +66,7 @@ const option = {
 </script>
 
 <template>
-  <div class="basis-72 shrink-0 grow flex flex-col items-center gap-2 my-2" v-if="pool.gachaCount">
+  <div class="basis-72 shrink-0 grow-0 flex flex-col items-center gap-2 my-2" v-if="pool.gachaCount">
     <div class="font-bold text-xl">{{ title() }}</div>
     <div class="h-64 w-64">
       <v-chart class="h-64" :option="option"></v-chart>

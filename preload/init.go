@@ -14,6 +14,8 @@ var (
 	UpItemMap   = make(map[int64]int64)
 	ItemRankMap = make(map[int64]map[int64]int64)
 
+	PoolTypeMap = make(map[int64]*pb.GachaTypeListDataUnit)
+
 	DollNameMapping   = make(map[string]int64)
 	WeaponNameMapping = make(map[string]int64)
 )
@@ -140,5 +142,11 @@ func init() {
 				}
 			}
 		}
+	}
+
+	var gachaTypeListData pb.GachaTypeListData
+	err = util.GetTableData(info.TablePath, &gachaTypeListData)
+	for i, unit := range gachaTypeListData.Units {
+		PoolTypeMap[unit.Id] = gachaTypeListData.Units[i]
 	}
 }

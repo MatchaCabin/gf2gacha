@@ -34,14 +34,14 @@ export function HandleCommunityTasks() {
   return window['go']['main']['App']['HandleCommunityTasks']();
 }
 
-export function IncrementalUpdatePoolInfo() {
-  return window['go']['main']['App']['IncrementalUpdatePoolInfo']();
-}
-
 export function MergeEreRecord(arg1, arg2) {
   return window['go']['main']['App']['MergeEreRecord'](arg1, arg2);
 }
 
 export function SaveSettingExchangeList(arg1) {
   return window['go']['main']['App']['SaveSettingExchangeList'](arg1);
+}
+
+export function UpdatePoolInfo(arg1) {
+  return window['go']['main']['App']['UpdatePoolInfo'](arg1);
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func GetPoolInfo(uid string, poolType int64) (model.Pool, error) {
-	localRecordList, err := GetLocalRecord(uid, poolType)
+	localRecordList, err := GetLocalRecord(uid, poolType, 0)
 	if err != nil {
 		return model.Pool{}, errors.WithStack(err)
 	}

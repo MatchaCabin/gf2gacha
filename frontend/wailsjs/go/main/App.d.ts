@@ -18,8 +18,8 @@ export function GetUserList():Promise<Array<string>>;
 
 export function HandleCommunityTasks():Promise<Array<string>>;
 
-export function IncrementalUpdatePoolInfo():Promise<string>;
-
 export function MergeEreRecord(arg1:string,arg2:string):Promise<string>;
 
 export function SaveSettingExchangeList(arg1:Array<number>):Promise<void>;
+
+export function UpdatePoolInfo(arg1:boolean):Promise<Array<string>>;

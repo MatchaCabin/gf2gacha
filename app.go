@@ -55,13 +55,13 @@ func (a *App) GetPoolInfo(uid string, poolType int64) model.Pool {
 	return pool
 }
 
-func (a *App) IncrementalUpdatePoolInfo() string {
-	uid, err := logic.IncrementalUpdatePoolInfo()
+func (a *App) UpdatePoolInfo(isFull bool) ([]string, error) {
+	messageList, err := logic.UpdatePoolInfo(isFull)
 	if err != nil {
 		logger.Logger.Error(err)
-		return ""
+		return nil, err
 	}
-	return uid
+	return messageList, nil
 }
 
 func (a *App) MergeEreRecord(uid, typ string) (message string, err error) {

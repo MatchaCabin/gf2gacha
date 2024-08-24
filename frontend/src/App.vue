@@ -9,7 +9,7 @@ import {
   GetSettingExchangeList,
   GetUserList,
   HandleCommunityTasks,
-  IncrementalUpdatePoolInfo,
+  UpdatePoolInfo,
   MergeEreRecord,
   SaveSettingExchangeList
 } from "../wailsjs/go/main/App";
@@ -59,26 +59,19 @@ const getAllPoolInfo = async () => {
   await getPoolInfo(8)
 }
 
-const incrementalUpdatePoolInfo = async () => {
+const updatePoolInfo = async (isFull:boolean) => {
   loading.value = true
-  await IncrementalUpdatePoolInfo().then(result => {
-    if (result != "") {
-      if (!uidList.value.includes(result)) {
-        uidList.value.push(result)
-      }
-      currentUid.value = result
+  await UpdatePoolInfo(isFull).then(result => {
+    let uid=result[0]
+    if (!uidList.value.includes(uid)) {
+      uidList.value.push(uid)
     }
+    currentUid.value = uid
+    ElMessage({message: result.join("<br/>"), type: 'success', plain: true, showClose: true, duration: 0, dangerouslyUseHTMLString: true})
   }).catch(err => {
-    console.log(err)
+    ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 0})
   })
   await getAllPoolInfo()
-  ElMessage({
-    message: '更新成功',
-    type: 'success',
-    plain: true,
-    showClose: true,
-    duration: 1000
-  })
   loading.value = false
 }
 
@@ -168,8 +161,8 @@ onMounted(async () => {
   <div class="h-dvh w-full flex flex-col p-4 gap-4" v-loading="loading" element-loading-text="Loading...">
     <div class="flex">
       <div class="grow">
-        <el-button type="success" class="font-bold" @click="incrementalUpdatePoolInfo">增量更新</el-button>
-        <el-button type="primary" class="font-bold" disabled>全量更新</el-button>
+        <el-button type="success" class="font-bold" @click="updatePoolInfo(false)">增量更新</el-button>
+        <el-button type="primary" class="font-bold" @click="updatePoolInfo(true)">全量更新</el-button>
         <el-dropdown class="ml-3">
           <el-button type="danger" class="font-bold">导入导出</el-button>
           <template #dropdown>
