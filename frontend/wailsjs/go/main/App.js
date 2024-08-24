@@ -10,6 +10,10 @@ export function CheckUpdate() {
   return window['go']['main']['App']['CheckUpdate']();
 }
 
+export function ExportRawJson(arg1) {
+  return window['go']['main']['App']['ExportRawJson'](arg1);
+}
+
 export function GetCommunityExchangeList() {
   return window['go']['main']['App']['GetCommunityExchangeList']();
 }
@@ -32,6 +36,10 @@ export function GetUserList() {
 
 export function HandleCommunityTasks() {
   return window['go']['main']['App']['HandleCommunityTasks']();
+}
+
+export function ImportRawJson(arg1) {
+  return window['go']['main']['App']['ImportRawJson'](arg1);
 }
 
 export function MergeEreRecord(arg1, arg2) {

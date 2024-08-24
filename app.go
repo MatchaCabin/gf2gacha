@@ -65,6 +65,10 @@ func (a *App) UpdatePoolInfo(isFull bool) ([]string, error) {
 }
 
 func (a *App) MergeEreRecord(uid, typ string) (message string, err error) {
+	if uid == "" {
+		return "", errors.New("UID为空,请至少更新一次数据再进行合并")
+	}
+
 	var fileOption runtime.OpenDialogOptions
 	switch strings.ToLower(typ) {
 	case "json":
@@ -82,6 +86,10 @@ func (a *App) MergeEreRecord(uid, typ string) (message string, err error) {
 		return
 	}
 
+	if erePath == "" {
+		return "", errors.New("用户取消导入")
+	}
+
 	err = logic.MergeEreRecord(uid, erePath, typ)
 	if err != nil {
 		logger.Logger.Error(err)
@@ -89,6 +97,63 @@ func (a *App) MergeEreRecord(uid, typ string) (message string, err error) {
 	}
 
 	message = "合并成功"
+	return
+}
+
+func (a *App) ImportRawJson(uid string) (message string, err error) {
+	if uid == "" {
+		return "", errors.New("UID为空,请至少更新一次数据再进行导出")
+	}
+
+	fileOption := runtime.OpenDialogOptions{
+		Title:   "请选择RawJson文件",
+		Filters: []runtime.FileFilter{{DisplayName: "RawJsonData", Pattern: "*.json"}},
+	}
+	rawJsonPath, err := runtime.OpenFileDialog(a.ctx, fileOption)
+	if err != nil {
+		logger.Logger.Error(err)
+		return
+	}
+
+	if rawJsonPath == "" {
+		return "", errors.New("用户取消导入")
+	}
+
+	err = logic.ImportRawJson(uid, rawJsonPath)
+	if err != nil {
+		logger.Logger.Error(err)
+		return
+	}
+
+	message = "合并成功"
+	return
+}
+
+func (a *App) ExportRawJson(uid string) (message string, err error) {
+	if uid == "" {
+		return "", errors.New("UID为空,请至少更新一次数据再进行导出")
+	}
+
+	fileOption := runtime.OpenDialogOptions{
+		Title: "选择RawJson保存目录",
+	}
+	saveDir, err := runtime.OpenDirectoryDialog(a.ctx, fileOption)
+	if err != nil {
+		logger.Logger.Error(err)
+		return
+	}
+
+	if saveDir == "" {
+		return "", errors.New("用户取消导出")
+	}
+
+	err = logic.ExportRawJson(uid, saveDir)
+	if err != nil {
+		logger.Logger.Error(err)
+		return
+	}
+
+	message = "导出成功"
 	return
 }
 

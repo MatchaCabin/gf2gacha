@@ -11,7 +11,7 @@ import {
   HandleCommunityTasks,
   UpdatePoolInfo,
   MergeEreRecord,
-  SaveSettingExchangeList
+  SaveSettingExchangeList, ExportRawJson, ImportRawJson
 } from "../wailsjs/go/main/App";
 import PoolCard from "./components/PoolCard.vue";
 import {model} from "../wailsjs/go/models";
@@ -95,13 +95,32 @@ const openSettingDialog = async () => {
 
 const mergeEreRecord = async (typ: string) => {
   loading.value = true
-  await MergeEreRecord(currentUid.value, typ).then(() => {
-    ElMessage({message: '合并成功', type: 'success', plain: true, showClose: true, duration: 2000})
-  }).catch(() => {
-    ElMessage({message: '合并发生错误', type: 'error', plain: true, showClose: true, duration: 0})
+  await MergeEreRecord(currentUid.value, typ).then(result => {
+    ElMessage({message: result, type: 'success', plain: true, showClose: true, duration: 2000})
+  }).catch(err => {
+    ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 0})
   })
   await getAllPoolInfo()
   loading.value = false
+}
+
+const importRawJson = async () => {
+  loading.value = true
+  await ImportRawJson(currentUid.value).then(result => {
+    ElMessage({message: result, type: 'success', plain: true, showClose: true, duration: 2000})
+  }).catch(err => {
+    ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 0})
+  })
+  await getAllPoolInfo()
+  loading.value = false
+}
+
+const exportRawJson = () => {
+  ExportRawJson(currentUid.value).then(result => {
+    ElMessage({message: result, type: 'success', plain: true, showClose: true, duration: 2000})
+  }).catch(err => {
+    ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 2000})
+  })
 }
 
 const copyUid = () => {
@@ -169,7 +188,8 @@ onMounted(async () => {
             <el-dropdown-menu :disabled="!currentUid">
               <el-dropdown-item @click="mergeEreRecord('json')">导入EreJson</el-dropdown-item>
               <el-dropdown-item @click="mergeEreRecord('excel')">导入EreExcel</el-dropdown-item>
-              <el-dropdown-item divided disabled>导出Json</el-dropdown-item>
+              <el-dropdown-item @click="importRawJson">导入RawJson</el-dropdown-item>
+              <el-dropdown-item divided @click="exportRawJson">导出RawJson</el-dropdown-item>
               <el-dropdown-item disabled>导出Excel</el-dropdown-item>
             </el-dropdown-menu>
           </template>
