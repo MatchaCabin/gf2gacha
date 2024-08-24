@@ -100,7 +100,7 @@ func (a *App) MergeEreRecord(uid, typ string) (message string, err error) {
 	return
 }
 
-func (a *App) ImportRawJson(uid string) (message string, err error) {
+func (a *App) ImportRawJson(uid string, isReverse bool) (message string, err error) {
 	if uid == "" {
 		return "", errors.New("UID为空,请至少更新一次数据再进行导出")
 	}
@@ -119,7 +119,7 @@ func (a *App) ImportRawJson(uid string) (message string, err error) {
 		return "", errors.New("用户取消导入")
 	}
 
-	err = logic.ImportRawJson(uid, rawJsonPath)
+	err = logic.ImportRawJson(uid, rawJsonPath, isReverse)
 	if err != nil {
 		logger.Logger.Error(err)
 		return

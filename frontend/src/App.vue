@@ -3,15 +3,17 @@ import {onMounted, ref} from "vue";
 import {
   ApplyUpdate,
   CheckUpdate,
+  ExportRawJson,
   GetCommunityExchangeList,
   GetLogInfo,
   GetPoolInfo,
   GetSettingExchangeList,
   GetUserList,
   HandleCommunityTasks,
-  UpdatePoolInfo,
+  ImportRawJson,
   MergeEreRecord,
-  SaveSettingExchangeList, ExportRawJson, ImportRawJson
+  SaveSettingExchangeList,
+  UpdatePoolInfo
 } from "../wailsjs/go/main/App";
 import PoolCard from "./components/PoolCard.vue";
 import {model} from "../wailsjs/go/models";
@@ -59,10 +61,10 @@ const getAllPoolInfo = async () => {
   await getPoolInfo(8)
 }
 
-const updatePoolInfo = async (isFull:boolean) => {
+const updatePoolInfo = async (isFull: boolean) => {
   loading.value = true
   await UpdatePoolInfo(isFull).then(result => {
-    let uid=result[0]
+    let uid = result[0]
     if (!uidList.value.includes(uid)) {
       uidList.value.push(uid)
     }
@@ -104,9 +106,9 @@ const mergeEreRecord = async (typ: string) => {
   loading.value = false
 }
 
-const importRawJson = async () => {
+const importRawJson = async (isReverse: boolean) => {
   loading.value = true
-  await ImportRawJson(currentUid.value).then(result => {
+  await ImportRawJson(currentUid.value, isReverse).then(result => {
     ElMessage({message: result, type: 'success', plain: true, showClose: true, duration: 2000})
   }).catch(err => {
     ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 0})
@@ -188,7 +190,12 @@ onMounted(async () => {
             <el-dropdown-menu :disabled="!currentUid">
               <el-dropdown-item @click="mergeEreRecord('json')">导入EreJson</el-dropdown-item>
               <el-dropdown-item @click="mergeEreRecord('excel')">导入EreExcel</el-dropdown-item>
-              <el-dropdown-item @click="importRawJson">导入RawJson</el-dropdown-item>
+              <el-dropdown-item @click="importRawJson(false)">
+                <el-tooltip effect="dark" content="同一个RawJson里时间顺序一定要保持一致" placement="right">导入RawJson</el-tooltip>
+              </el-dropdown-item>
+              <el-dropdown-item @click="importRawJson(true)">
+                <el-tooltip effect="dark" content="同一个RawJson里时间顺序一定要保持一致" placement="right">导入RawJson(时间倒序)</el-tooltip>
+              </el-dropdown-item>
               <el-dropdown-item divided @click="exportRawJson">导出RawJson</el-dropdown-item>
               <el-dropdown-item disabled>导出Excel</el-dropdown-item>
             </el-dropdown-menu>

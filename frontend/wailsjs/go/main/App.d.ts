@@ -20,7 +20,7 @@ export function GetUserList():Promise<Array<string>>;
 
 export function HandleCommunityTasks():Promise<Array<string>>;
 
-export function ImportRawJson(arg1:string):Promise<string>;
+export function ImportRawJson(arg1:string,arg2:boolean):Promise<string>;
 
 export function MergeEreRecord(arg1:string,arg2:string):Promise<string>;
 

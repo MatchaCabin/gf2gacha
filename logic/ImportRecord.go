@@ -6,9 +6,10 @@ import (
 	"gf2gacha/util"
 	"github.com/pkg/errors"
 	"os"
+	"slices"
 )
 
-func ImportRawJson(uid, rawJsonPath string) error {
+func ImportRawJson(uid, rawJsonPath string, isReverse bool) error {
 	rawJsonBytes, err := os.ReadFile(rawJsonPath)
 	if err != nil {
 		return errors.WithStack(err)
@@ -28,6 +29,9 @@ func ImportRawJson(uid, rawJsonPath string) error {
 
 	for poolType, rawRecordList := range rawMap {
 		var recordList []model.LocalRecord
+		if isReverse {
+			slices.Reverse(rawRecordList)
+		}
 		for _, record := range rawRecordList {
 			recordList = append(recordList, model.LocalRecord{
 				PoolType:       poolType,

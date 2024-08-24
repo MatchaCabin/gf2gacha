@@ -38,8 +38,8 @@ export function HandleCommunityTasks() {
   return window['go']['main']['App']['HandleCommunityTasks']();
 }
 
-export function ImportRawJson(arg1) {
-  return window['go']['main']['App']['ImportRawJson'](arg1);
+export function ImportRawJson(arg1, arg2) {
+  return window['go']['main']['App']['ImportRawJson'](arg1, arg2);
 }
 
 export function MergeEreRecord(arg1, arg2) {
