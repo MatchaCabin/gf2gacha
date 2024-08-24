@@ -19,13 +19,36 @@ func HandleCommunityTasks() (messageList []string, err error) {
 
 	webToken, err := request.CommunityLogin(logInfo.AccessToken)
 	if err != nil {
+		var respData request.CommonResponse
+		if errors.As(err, &respData) {
+			if respData.Code == -1 {
+				logger.Logger.Info("AccessToken失效，尝试使用保存的WebToken")
+				webToken = config.GetWebToken(logInfo.Uid)
+				if webToken == "" {
+					return nil, errors.New("AccessToken失效且无保存的WebToken，您可能在其他设备登录过，请在本设备重新登录")
+				}
+			} else {
+				return nil, errors.WithStack(err)
+			}
+		} else {
+			return nil, errors.WithStack(err)
+		}
+	}
+	err = config.SetWebToken(logInfo.Uid, webToken)
+	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 
 	taskListData, err := request.CommunityTaskList(webToken)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		var respData request.CommonResponse
+		if errors.As(err, &respData) && respData.Code == -1 {
+			return nil, errors.New("AccessToken失效且WebToken过期，您可能在其他设备登录过，请在本设备重新登录")
+		} else {
+			return nil, errors.WithStack(err)
+		}
 	}
+
 	for _, dailyTask := range taskListData.DailyTask {
 		if dailyTask.CompleteCount < dailyTask.MaxCompleteCount {
 			switch dailyTask.TaskName {

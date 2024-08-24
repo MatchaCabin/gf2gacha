@@ -24,12 +24,12 @@ func init() {
 	}
 }
 
-func GetToken(uid string) string {
-	return viper.GetString(fmt.Sprintf("%s.token", uid))
+func GetWebToken(uid string) string {
+	return viper.GetString(fmt.Sprintf("%s.webToken", uid))
 }
 
-func SetToken(uid, token string) error {
-	viper.Set(fmt.Sprintf("%s.token", uid), token)
+func SetWebToken(uid, token string) error {
+	viper.Set(fmt.Sprintf("%s.webToken", uid), token)
 	return viper.WriteConfig()
 }
 

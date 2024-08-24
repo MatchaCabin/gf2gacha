@@ -3,6 +3,7 @@ package request
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/pkg/errors"
 	"io"
 	"net/http"
@@ -13,6 +14,10 @@ type CommonResponse struct {
 	Code    int             `json:"Code"`
 	Message string          `json:"Message"`
 	Data    json.RawMessage `json:"data"`
+}
+
+func (c CommonResponse) Error() string {
+	return fmt.Sprintf("%s(Code:%d)", c.Message, c.Code)
 }
 
 func CommunityGet(apiUrl string, values url.Values, webToken string) (dataBytes json.RawMessage, err error) {
@@ -47,7 +52,7 @@ func CommunityGet(apiUrl string, values url.Values, webToken string) (dataBytes 
 	}
 
 	if respBody.Code != 0 {
-		return nil, errors.Errorf("%s(Code:%d)", respBody.Message, respBody.Code)
+		return nil, errors.WithStack(respBody)
 	}
 
 	return respBody.Data, nil
@@ -88,7 +93,7 @@ func CommunityPost(apiUrl string, params map[string]interface{}, webToken string
 	}
 
 	if respBody.Code != 0 {
-		return nil, errors.Errorf("%s(Code:%d)", respBody.Message, respBody.Code)
+		return nil, errors.WithStack(respBody)
 	}
 
 	return respBody.Data, nil
