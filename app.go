@@ -109,17 +109,17 @@ func (a *App) ImportRawJson(uid string, isReverse bool) (message string, err err
 		Title:   "请选择RawJson文件",
 		Filters: []runtime.FileFilter{{DisplayName: "RawJsonData", Pattern: "*.json"}},
 	}
-	rawJsonPath, err := runtime.OpenFileDialog(a.ctx, fileOption)
+	importFilePath, err := runtime.OpenFileDialog(a.ctx, fileOption)
 	if err != nil {
 		logger.Logger.Error(err)
 		return
 	}
 
-	if rawJsonPath == "" {
+	if importFilePath == "" {
 		return "", errors.New("用户取消导入")
 	}
 
-	err = logic.ImportRawJson(uid, rawJsonPath, isReverse)
+	err = logic.ImportRawJson(uid, importFilePath, isReverse)
 	if err != nil {
 		logger.Logger.Error(err)
 		return
@@ -154,6 +154,63 @@ func (a *App) ExportRawJson(uid string) (message string, err error) {
 	}
 
 	message = "导出成功"
+	return
+}
+
+func (a *App) ImportMccExcel(uid string) (message string, err error) {
+	if uid == "" {
+		return "", errors.New("UID为空,请至少更新一次数据再进行导出")
+	}
+
+	fileOption := runtime.OpenDialogOptions{
+		Title:   "请选择MccExcel文件",
+		Filters: []runtime.FileFilter{{DisplayName: "MccExcel", Pattern: "*.xlsx"}},
+	}
+	importFilePath, err := runtime.OpenFileDialog(a.ctx, fileOption)
+	if err != nil {
+		logger.Logger.Error(err)
+		return
+	}
+
+	if importFilePath == "" {
+		return "", errors.New("用户取消导入")
+	}
+
+	err = logic.ImportMccExcel(uid, importFilePath)
+	if err != nil {
+		logger.Logger.Error(err)
+		return
+	}
+
+	message = "MccExcel合并成功"
+	return
+}
+
+func (a *App) ExportMccExcel(uid string) (message string, err error) {
+	if uid == "" {
+		return "", errors.New("UID为空,请至少更新一次数据再进行导出")
+	}
+
+	fileOption := runtime.OpenDialogOptions{
+		Title: "选择MccExcel保存目录",
+	}
+	saveDir, err := runtime.OpenDirectoryDialog(a.ctx, fileOption)
+	if err != nil {
+		logger.Logger.Error(err)
+		return
+	}
+
+	if saveDir == "" {
+		return "", errors.New("用户取消导出")
+	}
+
+	err = logic.ExportMccExcel(uid, saveDir)
+	if err != nil {
+		logger.Logger.Error(err)
+		return
+	}
+
+	message = "MccExcel导出成功"
 	return
 }
 

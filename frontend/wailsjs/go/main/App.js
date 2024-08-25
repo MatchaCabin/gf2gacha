@@ -10,6 +10,10 @@ export function CheckUpdate() {
   return window['go']['main']['App']['CheckUpdate']();
 }
 
+export function ExportMccExcel(arg1) {
+  return window['go']['main']['App']['ExportMccExcel'](arg1);
+}
+
 export function ExportRawJson(arg1) {
   return window['go']['main']['App']['ExportRawJson'](arg1);
 }
@@ -36,6 +40,10 @@ export function GetUserList() {
 
 export function HandleCommunityTasks() {
   return window['go']['main']['App']['HandleCommunityTasks']();
+}
+
+export function ImportMccExcel(arg1) {
+  return window['go']['main']['App']['ImportMccExcel'](arg1);
 }
 
 export function ImportRawJson(arg1, arg2) {

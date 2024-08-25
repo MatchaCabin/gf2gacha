@@ -6,6 +6,8 @@ export function ApplyUpdate():Promise<string>;
 
 export function CheckUpdate():Promise<string>;
 
+export function ExportMccExcel(arg1:string):Promise<string>;
+
 export function ExportRawJson(arg1:string):Promise<string>;
 
 export function GetCommunityExchangeList():Promise<Array<model.CommunityExchangeList>>;
@@ -19,6 +21,8 @@ export function GetSettingExchangeList():Promise<Array<number>>;
 export function GetUserList():Promise<Array<string>>;
 
 export function HandleCommunityTasks():Promise<Array<string>>;
+
+export function ImportMccExcel(arg1:string):Promise<string>;
 
 export function ImportRawJson(arg1:string,arg2:boolean):Promise<string>;
 

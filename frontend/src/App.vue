@@ -3,6 +3,7 @@ import {onMounted, ref} from "vue";
 import {
   ApplyUpdate,
   CheckUpdate,
+  ExportMccExcel,
   ExportRawJson,
   GetCommunityExchangeList,
   GetLogInfo,
@@ -10,6 +11,7 @@ import {
   GetSettingExchangeList,
   GetUserList,
   HandleCommunityTasks,
+  ImportMccExcel,
   ImportRawJson,
   MergeEreRecord,
   SaveSettingExchangeList,
@@ -125,6 +127,25 @@ const exportRawJson = () => {
   })
 }
 
+const importMccExcel = async () => {
+  loading.value = true
+  await ImportMccExcel(currentUid.value).then(result => {
+    ElMessage({message: result, type: 'success', plain: true, showClose: true, duration: 2000})
+  }).catch(err => {
+    ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 2000})
+  })
+  await getAllPoolInfo()
+  loading.value = false
+}
+
+const exportMccExcel = () => {
+  ExportMccExcel(currentUid.value).then(result => {
+    ElMessage({message: result, type: 'success', plain: true, showClose: true, duration: 2000})
+  }).catch(err => {
+    ElMessage({message: err, type: 'error', plain: true, showClose: true, duration: 2000})
+  })
+}
+
 const copyUid = () => {
   ClipboardSetText(logInfo.value.uid)
   ElMessage({message: 'UID已复制', type: 'success', plain: true, showClose: true, duration: 1000})
@@ -196,8 +217,9 @@ onMounted(async () => {
               <el-dropdown-item @click="importRawJson(true)">
                 <el-tooltip effect="dark" content="同一个RawJson里时间顺序一定要保持一致" placement="right">导入RawJson(时间倒序)</el-tooltip>
               </el-dropdown-item>
+              <el-dropdown-item @click="importMccExcel">导入MccExcel</el-dropdown-item>
               <el-dropdown-item divided @click="exportRawJson">导出RawJson</el-dropdown-item>
-              <el-dropdown-item disabled>导出Excel</el-dropdown-item>
+              <el-dropdown-item @click="exportMccExcel">导出MccExcel</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -260,7 +282,3 @@ onMounted(async () => {
     </el-dialog>
   </div>
 </template>
-
-<style>
-
-</style>
