@@ -6,6 +6,9 @@
   "frontend:build": "npm run build",
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
+  "build": {
+    "upx": false
+  },
   "author": {
     "name": "Matcha",
     "email": "admin@mcc.wiki"
