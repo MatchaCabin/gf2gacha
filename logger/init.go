@@ -10,7 +10,7 @@ import (
 var Logger *zap.SugaredLogger
 
 func init() {
-	logFile, err := os.OpenFile("gf2gacha.log", os.O_RDWR|os.O_CREATE, 0755)
+	logFile, err := os.OpenFile("gf2gacha.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0755)
 	if err != nil {
 		panic(err)
 	}
