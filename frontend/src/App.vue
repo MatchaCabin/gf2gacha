@@ -58,6 +58,8 @@ const getAllPoolInfo = async () => {
   poolList.value = []
   await getPoolInfo(3)
   await getPoolInfo(4)
+  await getPoolInfo(6)
+  await getPoolInfo(7)
   await getPoolInfo(1)
   await getPoolInfo(5)
   await getPoolInfo(8)

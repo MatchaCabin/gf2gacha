@@ -20,6 +20,10 @@ const title = (): string => {
       return '武器池'
     case 5:
       return '新手池'
+    case 6:
+      return '自选角色池'
+    case 7:
+      return '自选武器池'
     case 8:
       return '神秘箱'
     default:
