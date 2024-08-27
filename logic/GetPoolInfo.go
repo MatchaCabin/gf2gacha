@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"gf2gacha/logger"
 	"gf2gacha/model"
 	"gf2gacha/preload"
 	"github.com/pkg/errors"
@@ -18,7 +19,10 @@ func GetPoolInfo(uid string, poolType int64) (model.Pool, error) {
 		pool.GachaCount++
 		pool.StoredCount++
 		item := preload.ItemMap[storedRecord.ItemId]
-		itemRank := preload.ItemRankMap[storedRecord.PoolId][storedRecord.ItemId]
+		itemRank := item.Rank
+		if poolType == 8 {
+			itemRank = preload.ItemRankMap[storedRecord.PoolId][storedRecord.ItemId]
+		}
 		if itemRank == 5 {
 			if isPreviousLose {
 				pool.GuaranteesCount++
@@ -44,8 +48,10 @@ func GetPoolInfo(uid string, poolType int64) (model.Pool, error) {
 			pool.Rank5Count++
 		} else if itemRank == 4 {
 			pool.Rank4Count++
-		} else {
+		} else if itemRank == 3 {
 			pool.Rank3Count++
+		} else {
+			logger.Logger.Warnf("未知的物品Rank poolType:%d poolId:%d itemId:%d", poolType, storedRecord.PoolId, storedRecord.ItemId)
 		}
 	}
 
