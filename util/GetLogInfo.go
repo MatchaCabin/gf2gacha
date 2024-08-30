@@ -35,7 +35,11 @@ func GetLogInfo() (logInfo model.LogInfo, err error) {
 	if err != nil {
 		return model.LogInfo{}, errors.WithStack(err)
 	}
-	resultUserInfo := regexpUserInfo.FindSubmatch(logData)
+	resultUserInfoList := regexpUserInfo.FindAllSubmatch(logData, -1)
+	if len(resultUserInfoList) == 0 {
+		return model.LogInfo{}, errors.New("未在日志中找到AccessToken或Uid")
+	}
+	resultUserInfo := resultUserInfoList[len(resultUserInfoList)-1]
 	if len(resultUserInfo) == 3 {
 		logInfo.AccessToken = string(resultUserInfo[1])
 		logInfo.Uid = string(resultUserInfo[2])
@@ -47,7 +51,11 @@ func GetLogInfo() (logInfo model.LogInfo, err error) {
 	if err != nil {
 		return model.LogInfo{}, errors.WithStack(err)
 	}
-	resultGachaUrl := regexpGachaUrl.FindSubmatch(logData)
+	resultGachaUrlList := regexpGachaUrl.FindAllSubmatch(logData, -1)
+	if len(resultGachaUrlList) == 0 {
+		return model.LogInfo{}, errors.New("未在日志中找到抽卡链接")
+	}
+	resultGachaUrl := resultGachaUrlList[len(resultGachaUrlList)-1]
 	if len(resultGachaUrl) == 2 {
 		logInfo.GachaUrl = string(resultGachaUrl[1])
 	} else {
