@@ -10,23 +10,23 @@ import (
 type CommunityTopicListData struct {
 	LastTid int64 `json:"last_tid"`
 	List    []struct {
-		CategoryId   int64    `json:"category_id"`
-		CategoryName string   `json:"category_name"`
-		CommentNum   int64    `json:"comment_num"`
-		Content      string   `json:"content"`
-		CreateTime   string   `json:"create_time"`
-		IsAdmin      bool     `json:"is_admin"`
-		IsAuthor     bool     `json:"is_author"`
-		IsFavor      bool     `json:"is_favor"`
-		IsLike       bool     `json:"is_like"`
-		LikeNum      int64    `json:"like_num"`
-		PicList      []string `json:"pic_list"`
-		Title        string   `json:"title"`
-		TopicId      int64    `json:"topic_id"`
-		UserAvatar   string   `json:"user_avatar"`
-		UserId       int64    `json:"user_id"`
-		UserLevel    int64    `json:"user_level"`
-		UserNickName string   `json:"user_nick_name"`
+		CategoryId   int64       `json:"category_id"`
+		CategoryName string      `json:"category_name"`
+		CommentNum   interface{} `json:"comment_num"`
+		Content      string      `json:"content"`
+		CreateTime   string      `json:"create_time"`
+		IsAdmin      bool        `json:"is_admin"`
+		IsAuthor     bool        `json:"is_author"`
+		IsFavor      bool        `json:"is_favor"`
+		IsLike       bool        `json:"is_like"`
+		LikeNum      interface{} `json:"like_num"`
+		PicList      []string    `json:"pic_list"`
+		Title        string      `json:"title"`
+		TopicId      int64       `json:"topic_id"`
+		UserAvatar   string      `json:"user_avatar"`
+		UserId       int64       `json:"user_id"`
+		UserLevel    int64       `json:"user_level"`
+		UserNickName string      `json:"user_nick_name"`
 	} `json:"list"`
 	NextPage bool  `json:"next_page"`
 	PubTime  int64 `json:"pub_time"`

@@ -7,27 +7,27 @@ import (
 
 type CommunityUserInfoData struct {
 	User struct {
-		AuthLock           int64  `json:"auth_lock"`
-		AuthType           int64  `json:"auth_type"`
-		Avatar             string `json:"avatar"`
-		Exp                int64  `json:"exp"`
-		Fans               int64  `json:"fans"`
-		Favors             int64  `json:"favors"`
-		Follows            int64  `json:"follows"`
-		GameCommanderLevel int64  `json:"game_commander_level"`
-		GameNickName       string `json:"game_nick_name"`
-		GameUid            int64  `json:"game_uid"`
-		IpLocation         string `json:"ip_location"`
-		IsAdmin            bool   `json:"is_admin"`
-		IsAuthor           bool   `json:"is_author"`
-		IsFollow           bool   `json:"is_follow"`
-		Level              int64  `json:"level"`
-		Likes              int64  `json:"likes"`
-		NextLvExp          int64  `json:"next_lv_exp"`
-		NickName           string `json:"nick_name"`
-		Score              int64  `json:"score"`
-		Signature          string `json:"signature"`
-		Uid                int64  `json:"uid"`
+		AuthLock           int64       `json:"auth_lock"`
+		AuthType           int64       `json:"auth_type"`
+		Avatar             string      `json:"avatar"`
+		Exp                int64       `json:"exp"`
+		Fans               interface{} `json:"fans"`
+		Favors             interface{} `json:"favors"`
+		Follows            interface{} `json:"follows"`
+		GameCommanderLevel int64       `json:"game_commander_level"`
+		GameNickName       string      `json:"game_nick_name"`
+		GameUid            int64       `json:"game_uid"`
+		IpLocation         string      `json:"ip_location"`
+		IsAdmin            bool        `json:"is_admin"`
+		IsAuthor           bool        `json:"is_author"`
+		IsFollow           bool        `json:"is_follow"`
+		Level              int64       `json:"level"`
+		Likes              interface{} `json:"likes"`
+		NextLvExp          int64       `json:"next_lv_exp"`
+		NickName           string      `json:"nick_name"`
+		Score              int64       `json:"score"`
+		Signature          string      `json:"signature"`
+		Uid                int64       `json:"uid"`
 	} `json:"user"`
 }
 
