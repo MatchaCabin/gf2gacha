@@ -24,6 +24,19 @@ func init() {
 	}
 }
 
+func GetGameDataDir() string {
+	return viper.GetString("GameDataDir")
+}
+
+func SetGameDataDir(gameDataDir string) error {
+	viper.Set("GameDataDir", gameDataDir)
+	return viper.WriteConfig()
+}
+
+func IsSetGameDataDir() bool {
+	return viper.IsSet("GameDataDir")
+}
+
 func GetWebToken(uid string) string {
 	return viper.GetString(fmt.Sprintf("%s.webToken", uid))
 }

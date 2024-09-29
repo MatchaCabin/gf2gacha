@@ -6,6 +6,10 @@ import (
 )
 
 func GetLocalRecord(uid string, poolType, endTimestamp int64) (recordList []model.LocalRecord, err error) {
+	if uid == "" {
+		return nil, errors.New("uid为空")
+	}
+
 	session := model.Engine.NewSession()
 	defer session.Close()
 

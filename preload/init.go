@@ -4,6 +4,7 @@ import (
 	"gf2gacha/logger"
 	"gf2gacha/pb"
 	"gf2gacha/util"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -21,13 +22,19 @@ var (
 )
 
 func init() {
-	info, err := util.GetLogInfo()
+	//info, err := util.GetLogInfo()
+	//if err != nil {
+	//	logger.Logger.Panic(err)
+	//}
+
+	gameDataDir, err := util.GetGameDataDir()
 	if err != nil {
 		logger.Logger.Panic(err)
 	}
+	tableDir := filepath.Join(gameDataDir, "Table")
 
 	var langCNData pb.LangPackageTableCnData
-	err = util.GetTableData(info.TablePath, &langCNData)
+	err = util.GetTableData(tableDir, &langCNData)
 	if err != nil {
 		logger.Logger.Panic(err)
 	}
@@ -36,7 +43,7 @@ func init() {
 	}
 
 	var itemData pb.ItemData
-	err = util.GetTableData(info.TablePath, &itemData)
+	err = util.GetTableData(tableDir, &itemData)
 	if err != nil {
 		logger.Logger.Panic(err)
 	}
@@ -51,7 +58,7 @@ func init() {
 	}
 
 	var gachaData pb.GachaData
-	err = util.GetTableData(info.TablePath, &gachaData)
+	err = util.GetTableData(tableDir, &gachaData)
 	if err != nil {
 		logger.Logger.Panic(err)
 	}
@@ -145,7 +152,7 @@ func init() {
 	}
 
 	var gachaTypeListData pb.GachaTypeListData
-	err = util.GetTableData(info.TablePath, &gachaTypeListData)
+	err = util.GetTableData(tableDir, &gachaTypeListData)
 	for i, unit := range gachaTypeListData.Units {
 		PoolTypeMap[unit.Id] = gachaTypeListData.Units[i]
 	}

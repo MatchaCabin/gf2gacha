@@ -37,14 +37,14 @@ func GetLogInfo() (logInfo model.LogInfo, err error) {
 	}
 	resultUserInfoList := regexpUserInfo.FindAllSubmatch(logData, -1)
 	if len(resultUserInfoList) == 0 {
-		return model.LogInfo{}, errors.New("未在日志中找到AccessToken或Uid")
+		return model.LogInfo{}, errors.New("未在日志中找到AccessToken或Uid,可能是最近一次游戏启动时未登录")
 	}
 	resultUserInfo := resultUserInfoList[len(resultUserInfoList)-1]
 	if len(resultUserInfo) == 3 {
 		logInfo.AccessToken = string(resultUserInfo[1])
 		logInfo.Uid = string(resultUserInfo[2])
 	} else {
-		return model.LogInfo{}, errors.New("未在日志中找到AccessToken或Uid")
+		return model.LogInfo{}, errors.New("未在日志中找到AccessToken或Uid,可能是最近一次游戏启动时未登录")
 	}
 
 	regexpGachaUrl, err := regexp.Compile(`"gacha_record_url":"(.*?)"`)
