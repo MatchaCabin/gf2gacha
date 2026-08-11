@@ -82,3 +82,12 @@ func SetLayout(layoutType int64) error {
 	viper.Set("layout", layoutType)
 	return viper.WriteConfig()
 }
+
+func GetCapturePort() int {
+	return viper.GetInt("capturePort")
+}
+
+func SetCapturePort(port int) error {
+	viper.Set("capturePort", port)
+	return viper.WriteConfig()
+}

@@ -20,6 +20,8 @@ export function GetLogInfo():Promise<model.LogInfo>;
 
 export function GetPoolInfo(arg1:string,arg2:number):Promise<model.Pool>;
 
+export function GetSettingCapturePort():Promise<number>;
+
 export function GetSettingExchangeList():Promise<Array<number>>;
 
 export function GetSettingFont():Promise<string>;
@@ -35,6 +37,8 @@ export function ImportMccExcel(arg1:string):Promise<string>;
 export function ImportRawJson(arg1:string,arg2:boolean):Promise<string>;
 
 export function MergeEreRecord(arg1:string,arg2:string):Promise<string>;
+
+export function SaveSettingCapturePort(arg1:number):Promise<void>;
 
 export function SaveSettingExchangeList(arg1:Array<number>):Promise<void>;
 

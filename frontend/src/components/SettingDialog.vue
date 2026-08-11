@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onBeforeMount, ref} from "vue";
-import {GetCommunityExchangeList, GetSettingExchangeList, GetSettingFont, GetSettingLayout, SaveSettingExchangeList, SaveSettingFont, SaveSettingLayout} from "../../wailsjs/go/main/App";
+import {GetCommunityExchangeList, GetSettingCapturePort, GetSettingExchangeList, GetSettingFont, GetSettingLayout, SaveSettingCapturePort, SaveSettingExchangeList, SaveSettingFont, SaveSettingLayout} from "../../wailsjs/go/main/App";
 import {model} from "../../wailsjs/go/models.ts";
 import {ElMessage} from "element-plus";
 import {useLayoutStore} from "../stores/layout.ts";
@@ -27,6 +27,11 @@ const onFontChange = async (newFont: string) => {
 const layoutStore = useLayoutStore()
 const onLayoutChange = async (newLayoutType: number) => {
   await SaveSettingLayout(newLayoutType)
+}
+
+const capturePort = ref<number | null>(null)
+const onPortChange = async (newPort: number) => {
+  await SaveSettingCapturePort(newPort)
 }
 
 onBeforeMount(async () => {
@@ -62,6 +67,12 @@ onBeforeMount(async () => {
       layoutStore.layoutType = result
     }
   })
+
+  await GetSettingCapturePort().then(result => {
+    if (result) {
+      capturePort.value = result
+    }
+  })
 })
 
 </script>
@@ -93,6 +104,18 @@ onBeforeMount(async () => {
           <el-option :key="0" label="宽松" :value="0"/>
           <el-option :key="1" label="紧凑" :value="1"/>
         </el-select>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-24 shrink-0">捕获代理端口</div>
+        <el-input-number
+          v-model="capturePort"
+          :min="1"
+          :max="65535"
+          placeholder="留空则自动分配"
+          @change="onPortChange"
+          controls-position="right"
+          style="width: 50%"
+        />
       </div>
     </div>
   </el-dialog>

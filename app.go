@@ -305,6 +305,14 @@ func (a *App) SaveSettingLayout(layoutType int64) error {
 	return config.SetLayout(layoutType)
 }
 
+func (a *App) GetSettingCapturePort() int {
+	return config.GetCapturePort()
+}
+
+func (a *App) SaveSettingCapturePort(port int) error {
+	return config.SetCapturePort(port)
+}
+
 func (a *App) CaptureStart() error {
 	_, err := os.Stat("ca.crt")
 	if err != nil {
@@ -325,20 +333,36 @@ func (a *App) CaptureStart() error {
 	}
 
 	if a.tcpListener == nil {
-		for port := 60000; port < 60010; port++ {
-			listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
-			if err != nil {
-				logger.Logger.Error(err)
-				continue
+		configPort := config.GetCapturePort()
+		if configPort > 0 && configPort <= 65535 {
+			listener, err := net.Listen("tcp", fmt.Sprintf(":%d", configPort))
+			if err == nil {
+				a.captureMutex.Lock()
+				a.tcpPort = configPort
+				a.tcpListener = &listener
+				a.captureMutex.Unlock()
+				logger.Logger.Infof("配置的端口%d可用\n", configPort)
+			} else {
+				logger.Logger.Warnf("无法监听配置的端口 %d: %v，将尝试自动选择端口。", configPort, err)
 			}
+		}
 
-			a.captureMutex.Lock()
-			a.tcpPort = port
-			a.tcpListener = &listener
-			a.captureMutex.Unlock()
-			logger.Logger.Infof("端口%d可用\n", port)
+		// 如果通过配置未能成功创建监听器，则遍历端口范围自动选择
+		if a.tcpListener == nil {
+			for port := 60000; port < 60010; port++ {
+				listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+				if err != nil {
+					logger.Logger.Error(err)
+					continue
+				}
 
-			break
+				a.captureMutex.Lock()
+				a.tcpPort = port
+				a.tcpListener = &listener
+				a.captureMutex.Unlock()
+				logger.Logger.Infof("端口%d可用\n", port)
+				break
+			}
 		}
 	}
 

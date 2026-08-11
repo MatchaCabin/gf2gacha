@@ -38,6 +38,10 @@ export function GetPoolInfo(arg1, arg2) {
   return window['go']['main']['App']['GetPoolInfo'](arg1, arg2);
 }
 
+export function GetSettingCapturePort() {
+  return window['go']['main']['App']['GetSettingCapturePort']();
+}
+
 export function GetSettingExchangeList() {
   return window['go']['main']['App']['GetSettingExchangeList']();
 }
@@ -68,6 +72,10 @@ export function ImportRawJson(arg1, arg2) {
 
 export function MergeEreRecord(arg1, arg2) {
   return window['go']['main']['App']['MergeEreRecord'](arg1, arg2);
+}
+
+export function SaveSettingCapturePort(arg1) {
+  return window['go']['main']['App']['SaveSettingCapturePort'](arg1);
 }
 
 export function SaveSettingExchangeList(arg1) {
